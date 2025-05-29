@@ -22,20 +22,19 @@
         <div class="sidebarlogout">
             <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
         </div>
-    </div><div class="main">
-    <div class="main-navbar">
-        <ion-icon class="menu-toggle" name="menu-outline"></ion-icon>
-        <div class="search">
-            <input type="text" placeholder="Unataka kukula nini?">
-            <button class="search-btn">Search</button>
-        </div>
-        <div class="profile">
-            <a class="cart" href="#"><ion-icon name="cart-outline"></ion-icon></a>
-            <a class="user" href="#"><ion-icon name="person-outline"></ion-icon></a>
-        </div>
     </div>
-
-    <div class="main-highlight">
+    <div class="main">
+        <div class="main-navbar">
+            <ion-icon class="menu-toggle" name="menu-outline"></ion-icon>
+            <div class="search">
+                <input type="text" placeholder="Unataka kukula nini?">
+                <button class="search-btn">Search</button>
+            </div>
+            <div class="profile">
+                <a class="cart" href="#"><ion-icon name="cart-outline"></ion-icon></a>
+                <a class="user" href="#"><ion-icon name="person-outline"></ion-icon></a>
+            </div>
+        </div><div class="main-highlight">
         <div class="main-header">
             <h2 class="main-title">Recommendations</h2>
             <div class="main-arrow">
@@ -136,103 +135,49 @@
         <hr class="divider">
         <div class="main-detal">
             <h2 class="main-title">Choose Order</h2>
-            <div class="detail-wrapper">
-            <div class="detail-card">
-                <img class="detail-img" src="images/fish.jpg" alt="">
-                <div class="detail-desc">
-                    <div class="detail-name">
-                        <h4>samaki</h4>
-                        <p class="detail-sub">Straight from the lake</p>
-                        <p class="price">ksh.100</p>
-
-                    </div>
-                    <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
-
-                </div>
-               
+            <div class="detail-wrapper" id="food-menu">
+                <!-- 100 Kenyan food items will be populated here dynamically using JavaScript -->
             </div>
-            <div class="detail-card">
-                <img class="detail-img" src="images/nuts.jpg" alt="">
-                <div class="detail-desc">
-                    <div class="detail-name">
-                        <h4>Njugu</h4>
-                        <p class="detail-sub">ongeza nguvu😂😂</p>
-                        <p class="price">ksh.40</p>
-
-                    </div>
-                    <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
-                </div>
-
-            </div>
-            <div class="detail-card">
-                <img class="detail-img" src="images/mandazi.jpg" alt="">
-                <div class="detail-desc">
-                    <div class="detail-name">
-                        <h4>mandazi</h4>
-                        <p class="detail-sub">moto moto😂</p>
-                        <p class="price">ksh.10</p>
-
-                        
-                    </div>
-                    <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
-
-                </div>
-
-            </div>
-            <div class="detail-card">
-                <img class="detail-img" src="images/tea.jpg" alt="">
-                <div class="detail-desc">
-                    <div class="detail-name">
-                        <h4>chai</h4>
-                        <p class="detail-sub">punguza baridi..sio lazma mpoa😂😂</p>
-                        <p class="price">ksh.20</p>
-
-                    </div>
-                    <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
-
-                </div>
-
-            </div>
-            <div class="detail-card">
-                <img class="detail-img" src="images/tea.jpg" alt="">
-                <div class="detail-desc">
-                    <div class="detail-name">
-                        <h4>uji</h4>
-                        <p class="detail-sub">kwa wale hawakunywi maziwa</p>
-                        <p class="price">ksh.30</p>
-
-                    </div>
-                    <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
-
-                </div>
-
-            </div>
-            <div class="detail-card">
-                <img class="detail-img" src="images/fish.jpg" alt="">
-                <div class="detail-desc">
-                    <div class="detail-name">
-                        <h4>Omena</h4>
-                        <p class="detail-sub">omena si ni tuduudu😂😂</p>
-                        <p class="price">ksh.40</p>
-
-                    </div>
-                    <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
-                </div>
-
-            </div>
-            <div>
-
-            </div>
-
-
-            </div>
-
         </div>
-
     </div>
-
 </div>
 
-   <!-- Ionicons --><script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script><script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script><!-- jQuery - MUST come before your app.js --><script src="https://code.jquery.com/jquery-3.6.0.min.js"></script><!-- Your custom JS --><script src="app.js"></script></body>
-</html>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+  const foods = [
+    { name: "Ugali Beef", desc: "Soft Ugali with beef stew", price: 120 },
+    { name: "Ugali Matumbo", desc: "Ugali served with fried tripe", price: 90 },
+    { name: "Ugali Sukuma", desc: "Ugali with kales and beef broth", price: 70 },
+    { name: "Chapati Beans", desc: "Soft chapati and stewed beans", price: 80 },
+    { name: "Chips Masala", desc: "Fries tossed in masala sauce", price: 100 },
+    { name: "Mukimo Nyama", desc: "Mashed green maize, potatoes and meat", price: 120 },
+    { name: "Githeri", desc: "Mixed maize and beans", price: 70 },
+    { name: "Matoke", desc: "Stewed plantains in sauce", price: 90 },
+    { name: "Pilau", desc: "Spiced rice with beef", price: 110 },
+    { name: "Fish Ugali", desc: "Fried tilapia with Ugali", price: 150 },
 
+  ];
+
+  const container = document.getElementById("food-menu");
+  foods.forEach(food => {
+    const div = document.createElement("div");
+    div.className = "detail-card";
+    div.innerHTML = `
+      <img class="detail-img" src="images/${food.name.toLowerCase().replace(/\s+/g, '')}.jpg" alt="${food.name}">
+      <div class="detail-desc">
+        <div class="detail-name">
+          <h4>${food.name}</h4>
+          <p>${food.desc}</p>
+          <p>Ksh.${food.price}</p>
+        </div>
+        <ion-icon name="add-circle-outline"></ion-icon>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+</script>
+
+</body>
+        </html>
