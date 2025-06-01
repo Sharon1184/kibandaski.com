@@ -137,6 +137,15 @@
 
       // Call the function to fetch and display food items on page load
       window.addEventListener('DOMContentLoaded', fetchFoodItems);
+       document.addEventListener('DOMContentLoaded', () => {
+  const sidebar = document.querySelector('.sidebar');
+  const menuToggle = document.querySelector('.menu-toggle');
+
+  menuToggle.addEventListener('click', () => {
+    sidebar.classList.toggle('closed');
+  });
+});
    </script>
+    
 </body>
                         </html>
