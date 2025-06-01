@@ -298,7 +298,72 @@
 
 </div>
 
-   <!-- Ionicons --><script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script><script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script><!-- jQuery - MUST come before your app.js --><script src="https://code.jquery.com/jquery-3.6.0.min.js"></script><!-- Your custom JS --><script src="app.js"></script></body>
+   <!-- Ionicons --><script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script><script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script><!-- jQuery - MUST come before your app.js --><script src="https://code.jquery.com/jquery-3.6.0.min.js"></script><!-- Your custom JS --><script src="app.js"></script><!-- Firebase SDK and Firestore integration -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+  // Your Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
+    authDomain: "food-ae7ff.firebaseapp.com",
+    projectId: "food-ae7ff",
+    storageBucket: "food-ae7ff.firebasestorage.app",
+    messagingSenderId: "1058214228504",
+    appId: "1:1058214228504:web:f1f059be00c9aeaf7cc96d"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // Function to add order to Firestore
+  async function addOrder(itemName, price) {
+    try {
+      const docRef = await addDoc(collection(db, "orders"), {
+        item: itemName,
+        price: price,
+        createdAt: serverTimestamp()
+      });
+      alert(`Order for "${itemName}" added successfully! (ID: ${docRef.id})`);
+    } catch (error) {
+      alert('Error adding order: ' + error.message);
+    }
+  }
+
+  // Add "Order" buttons to each detail-card dynamically and setup event listeners
+  window.addEventListener('DOMContentLoaded', () => {
+    const detailCards = document.querySelectorAll('.detail-card');
+
+    detailCards.forEach(card => {
+      // Create button element
+      const orderBtn = document.createElement('button');
+      orderBtn.textContent = "Order";
+      orderBtn.style.marginTop = "10px";
+      orderBtn.style.padding = "8px 12px";
+      orderBtn.style.cursor = "pointer";
+      orderBtn.style.border = "none";
+      orderBtn.style.backgroundColor = "#28a745";
+      orderBtn.style.color = "#fff";
+      orderBtn.style.borderRadius = "5px";
+
+      // Append button inside detail-desc div
+      const descDiv = card.querySelector('.detail-desc');
+      descDiv.appendChild(orderBtn);
+
+      // Read item name and price from card
+      const itemName = card.querySelector('.detail-name h4').textContent.trim();
+      const priceText = card.querySelector('.price').textContent.trim(); // e.g. "ksh.100"
+      const price = parseFloat(priceText.replace(/[^0-9.]/g, ''));
+
+      // Add click event to button to save order
+      orderBtn.addEventListener('click', () => {
+        addOrder(itemName, price);
+      });
+    });
+  });
+</script>
+</body>
 </html>
 
                       
