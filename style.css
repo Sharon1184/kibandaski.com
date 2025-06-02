@@ -93,6 +93,7 @@ body {
   background-color: var(--whitecolor);
   border-radius: 20px;
   overflow: hidden;
+  z-index: 99;
 }
 
 .search input {
