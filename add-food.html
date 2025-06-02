@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Add Food</title>
 
-  <!-- Link to external CSS -->
-  <link rel="stylesheet" href="style.css">
+  <!-- External CSS -->
+  <link rel="stylesheet" href="style.css" />
 
   <!-- Ionicons (for icons) -->
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
@@ -18,7 +18,6 @@
     <div class="sidebar-menus">
       <a href="#"><ion-icon name="home-outline"></ion-icon>Home</a>
       <a href="#"><ion-icon name="add-outline"></ion-icon>Add Food</a>
-      <!-- Add more links as needed -->
     </div>
     <div class="sidebarlogout">
       <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
@@ -28,7 +27,7 @@
   <div class="main">
     <div class="main-navbar">
       <div class="search">
-        <input type="text" placeholder="Search food...">
+        <input type="text" placeholder="Search food..." />
         <button class="search-btn">Search</button>
       </div>
       <div class="profile">
@@ -41,50 +40,72 @@
       <h2>Add a New Food Item</h2>
       <form id="add-food-form">
         <label>Food Name:</label>
-        <input type="text" id="food-name" required><br><br>
+        <input type="text" id="food-name" required /><br><br>
 
         <label>Price:</label>
-        <input type="number" id="food-price" required><br><br>
+        <input type="number" id="food-price" required /><br><br>
 
-        <label>Image URL:</label>
-        <input type="text" id="food-image" required><br><br>
+        <label>Description:</label>
+        <textarea id="food-description" required></textarea><br><br>
+
+        <label>Food Image:</label>
+        <input type="file" id="food-image" accept="image/*" required /><br><br>
 
         <button type="submit">Add Food</button>
       </form>
     </div>
   </div>
 
-  <!-- Firebase + Custom Script -->
+  <!-- Firebase Script -->
   <script type="module">
-    // Firebase
+    // Firebase imports
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js";
 
+    // Firebase config
     const firebaseConfig = {
       apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
       authDomain: "food-ae7ff.firebaseapp.com",
       projectId: "food-ae7ff",
-      storageBucket: "food-ae7ff.firebasestorage.app",
+      storageBucket: "food-ae7ff.appspot.com",
       messagingSenderId: "1058214228504",
       appId: "1:1058214228504:web:f1f059be00c9aeaf7cc96d"
     };
 
+    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const storage = getStorage(app);
 
     const form = document.getElementById('add-food-form');
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+
       const name = document.getElementById('food-name').value;
-      const price = document.getElementById('food-price').value;
-      const image = document.getElementById('food-image').value;
+      const price = parseFloat(document.getElementById('food-price').value);
+      const description = document.getElementById('food-description').value;
+      const imageFile = document.getElementById('food-image').files[0];
+
+      if (!imageFile) {
+        alert('Please select an image file.');
+        return;
+      }
 
       try {
+        // Upload image to Firebase Storage
+        const storageRef = ref(storage, 'food-images/' + Date.now() + '-' + imageFile.name);
+        const snapshot = await uploadBytes(storageRef, imageFile);
+        const imageUrl = await getDownloadURL(snapshot.ref);
+
+        // Save to Firestore
         await addDoc(collection(db, 'foods'), {
-          name: name,
-          price: parseFloat(price),
-          image: image
+          name,
+          price,
+          description,
+          image: imageUrl
         });
+
         alert('Food item added!');
         form.reset();
       } catch (error) {
@@ -93,6 +114,5 @@
       }
     });
   </script>
-
 </body>
-</html>
+      </html>
