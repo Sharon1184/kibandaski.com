@@ -94,6 +94,7 @@ body {
   border-radius: 20px;
   overflow: hidden;
   z-index: 99;
+  padding-left:50%;
 }
 
 .search input {
