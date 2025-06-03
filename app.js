@@ -1,6 +1,6 @@
 // app.js
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -16,96 +16,85 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Reference the container div for menu items
-const menuWrapper = document.getElementById("menu-wrapper");
+// Load cart from localStorage
+const cartWrapper = document.querySelector('.cart-wrapper');
+const cartTotal = document.getElementById('cart-total');
+const checkoutBtn = document.querySelector('.checkout-btn');
 
-// Fetch and display food items from Firestore
-async function loadFoods() {
-  const querySnapshot = await getDocs(collection(db, "foods"));
-  querySnapshot.forEach((doc) => {
-    const food = doc.data();
+function renderCart() {
+  const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+  cartWrapper.innerHTML = '';
 
-    // Create food card HTML
-    const card = document.createElement("div");
-    card.classList.add("detail-card");
-    card.innerHTML = `
-      <img class="detail-img" src="${food.imageUrl}" alt="${food.name}">
-      <div class="detail-desc">
-        <div class="detail-name">
-          <h4>${food.name}</h4>
-          <p class="detail-sub">${food.description}</p>
-          <p class="price">ksh.${food.price}</p>
+  let total = 0;
+
+  cartItems.forEach((item, index) => {
+    const subtotal = item.price * item.quantity;
+    total += subtotal;
+
+    const cartItem = document.createElement('div');
+    cartItem.classList.add('cart-item');
+    cartItem.innerHTML = `
+      <img src="${item.imageUrl}" alt="${item.name}" class="cart-img" />
+      <div class="cart-details">
+        <h4>${item.name}</h4>
+        <p>Ksh. ${item.price}</p>
+        <div class="cart-controls">
+          <label>Qty:</label>
+          <input type="number" min="1" value="${item.quantity}" class="cart-qty" data-index="${index}" />
+          <button class="remove-btn" data-index="${index}">Remove</button>
         </div>
-        <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
+      </div>
+      <div class="cart-subtotal">
+        <strong>Ksh. ${subtotal}</strong>
       </div>
     `;
 
-    menuWrapper.appendChild(card);
+    cartWrapper.appendChild(cartItem);
   });
+
+  cartTotal.textContent = `Ksh. ${total}`;
 }
 
-loadFoods();
-
-// Sidebar toggle on mobile
-const mobile = document.querySelector('.menu-toggle');
-const mobileLink = document.querySelector('.sidebar');
-
-mobile.addEventListener("click", function () {
-  mobile.classList.toggle("is-active");
-  mobileLink.classList.toggle("active");
-});
-
-mobileLink.addEventListener("click", function () {
-  const menuBars = document.querySelector(".is-active");
-  if (window.innerWidth <= 768 && menuBars) {
-    mobile.classList.toggle("is-active");
-    mobileLink.classList.toggle("active");
+// Handle quantity change
+cartWrapper.addEventListener('input', function (e) {
+  if (e.target.classList.contains('cart-qty')) {
+    const index = e.target.dataset.index;
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart[index].quantity = parseInt(e.target.value);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    renderCart();
   }
 });
 
-// Scroll step values
-const step = 100;
-const stepfilter = 60;
-
-// DOM elements for menu scroll
-const backMenus = document.querySelector(".back-menus");
-const nextMenus = document.querySelector(".next-menus");
-const filterWrapper = document.querySelector(".filter-wrapper");
-
-// Scroll left on click for Menu Categories
-backMenus.addEventListener("click", function (e) {
-  e.preventDefault();
-  filterWrapper.scrollBy({
-    left: -stepfilter,
-    behavior: "smooth"
-  });
+// Handle remove button
+cartWrapper.addEventListener('click', function (e) {
+  if (e.target.classList.contains('remove-btn')) {
+    const index = e.target.dataset.index;
+    const cart = JSON.parse(localStorage.getItem('cart')) || [];
+    cart.splice(index, 1);
+    localStorage.setItem('cart', JSON.stringify(cart));
+    renderCart();
+  }
 });
 
-nextMenus.addEventListener("click", function (e) {
-  e.preventDefault();
-  filterWrapper.scrollBy({
-    left: stepfilter,
-    behavior: "smooth"
-  });
+// Handle checkout
+checkoutBtn.addEventListener('click', async () => {
+  const cart = JSON.parse(localStorage.getItem('cart')) || [];
+  if (cart.length === 0) return alert('Your cart is empty');
+
+  try {
+    await addDoc(collection(db, 'orders'), {
+      items: cart,
+      createdAt: new Date().toISOString()
+    });
+
+    alert('Order placed successfully!');
+    localStorage.removeItem('cart');
+    renderCart();
+  } catch (error) {
+    alert('Failed to place order: ' + error);
+  }
 });
 
-// Scroll for Recommendations
-const backHighlight = document.querySelector(".back");
-const nextHighlight = document.querySelector(".next");
-const highlightWrapper = document.querySelector(".highlight-wrapper");
-
-backHighlight.addEventListener("click", function (e) {
-  e.preventDefault();
-  highlightWrapper.scrollBy({
-    left: -step,
-    behavior: "smooth"
-  });
-});
-
-nextHighlight.addEventListener("click", function (e) {
-  e.preventDefault();
-  highlightWrapper.scrollBy({
-    left: step,
-    behavior: "smooth"
-  });
-});
+renderCart();
+      
