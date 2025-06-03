@@ -48,31 +48,13 @@
     <div class="main-detal">
       <h2 class="main-title">My Cart</h2>
       <div class="cart-wrapper">
+        <!-- JavaScript will insert .cart-item blocks here -->
+      </div>
 
-        <!-- Sample Cart Item -->
-        <div class="cart-item">
-          <img src="images/mandazi.jpg" alt="Mandazi" class="cart-img" />
-          <div class="cart-details">
-            <h4>Mandazi</h4>
-            <p>Ksh. 10</p>
-            <div class="cart-controls">
-              <label>Qty:</label>
-              <input type="number" min="1" value="2" class="cart-qty" />
-              <button class="remove-btn">Remove</button>
-            </div>
-          </div>
-          <div class="cart-subtotal">
-            <strong>Ksh. 20</strong>
-          </div>
-        </div>
-
-        <!-- Add more .cart-item blocks dynamically with JS -->
-
-        <!-- Cart Summary -->
-        <div class="cart-summary">
-          <h3>Total: <span id="cart-total">Ksh. 20</span></h3>
-          <button class="checkout-btn">Proceed to Checkout</button>
-        </div>
+      <!-- Cart Summary -->
+      <div class="cart-summary">
+        <h3>Total: <span id="cart-total">Ksh. 0</span></h3>
+        <button class="checkout-btn">Proceed to Checkout</button>
       </div>
     </div>
   </div>
@@ -84,32 +66,7 @@
   <!-- jQuery -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-  <!-- Optional: JavaScript to calculate total, remove item, etc. -->
-  <script>
-    // Simple script to update total dynamically
-    $(document).on('input', '.cart-qty', function () {
-      const item = $(this).closest('.cart-item');
-      const price = parseInt(item.find('p').text().replace('Ksh.', ''));
-      const qty = parseInt($(this).val());
-      const subtotal = price * qty;
-      item.find('.cart-subtotal strong').text('Ksh. ' + subtotal);
-
-      updateTotal();
-    });
-
-    $(document).on('click', '.remove-btn', function () {
-      $(this).closest('.cart-item').remove();
-      updateTotal();
-    });
-
-    function updateTotal() {
-      let total = 0;
-      $('.cart-subtotal strong').each(function () {
-        total += parseInt($(this).text().replace('Ksh.', ''));
-      });
-      $('#cart-total').text('Ksh. ' + total);
-    }
-  </script>
+  <!-- Firebase + App Logic -->
   <script type="module" src="app.js"></script>
 </body>
-</html>
+        </html>
