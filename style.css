@@ -389,7 +389,113 @@ a:focus, button:focus {
 }
 /* === Cart Page Specific Styles using CSS Variables === */
 
+/* === Cart Page Specific Styles using CSS Variables === */
 
+.cart-wrapper {
+  background: var(--whitecolor);
+  padding: 1.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+.cart-item {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid var(--greycolor);
+  padding-bottom: 1rem;
+}
+
+.cart-img {
+  width: 100px;
+  height: 100px;
+  border-radius: 12px;
+  object-fit: cover;
+  background-color: var(--softgreencolor);
+}
+
+.cart-details {
+  flex: 1;
+}
+
+.cart-details h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primarycolor);
+}
+
+.cart-details p {
+  color: var(--darkgreycolor);
+  font-size: 0.95rem;
+  margin: 0.2rem 0;
+}
+
+.cart-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.cart-qty {
+  width: 60px;
+  padding: 0.4rem;
+  border: 1px solid var(--darkgreycolor);
+  border-radius: 8px;
+  background-color: var(--greycolor);
+  color: var(--blackcolor);
+}
+
+.remove-btn {
+  background-color: var(--secondarycolor);
+  color: var(--blackcolor);
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.remove-btn:hover {
+  background-color: #e6ac00;
+}
+
+.cart-subtotal {
+  font-weight: 600;
+  font-size: 1.1rem;
+  min-width: 100px;
+  text-align: right;
+  color: var(--primarycolor);
+}
+
+.cart-summary {
+  text-align: right;
+  margin-top: 2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--blackcolor);
+}
+
+.checkout-btn {
+  background-color: var(--primarycolor);
+  color: var(--whitecolor);
+  border: none;
+  padding: 0.8rem 1.2rem;
+  font-size: 1rem;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.3s ease;
+}
+
+.checkout-btn:hover {
+  background-color: #0b4c41;
+    }
 
 /* Responsive design */
 @media screen and (max-width: 644px) {
