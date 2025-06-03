@@ -420,18 +420,7 @@ a:focus, button:focus {
     }
     }
 /* Global Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Open Sans', sans-serif;
-}
 
-body {
-  display: flex;
-  min-height: 100vh;
-  background: #f9f9f9: none;
-}
 
 /* Cart Section */
 .main-title {
