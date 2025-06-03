@@ -1,12 +1,16 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Kibandaski Deliveries</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
     <div class="sidebar">
@@ -28,7 +32,7 @@
         <div class="main-navbar">
             <ion-icon class="menu-toggle" name="menu-outline"></ion-icon>
             <div class="search">
-                <input type="text" placeholder="Unataka kukula nini?">
+                <input type="text" placeholder="Unataka kukula nini?" />
                 <button class="search-btn">Search</button>
             </div>
             <div class="profile">
@@ -47,28 +51,28 @@
             </div>
             <div class="highlight-wrapper">
                 <div class="highlight-card">
-                    <img class="highlight-img" src="images/nuts.jpg" alt="Nuts">
+                    <img class="highlight-img" src="images/nuts.jpg" alt="Nuts" />
                     <div class="highlight-desc">
                         <h4>Njugu</h4>
                         <p>Ksh.10</p>
                     </div>
                 </div>
                 <div class="highlight-card">
-                    <img class="highlight-img" src="images/fish.jpg" alt="Fish">
+                    <img class="highlight-img" src="images/fish.jpg" alt="Fish" />
                     <div class="highlight-desc">
                         <h4>Fish Plain</h4>
                         <p>Ksh.80</p>
                     </div>
                 </div>
                 <div class="highlight-card">
-                    <img class="highlight-img" src="images/mandazi.jpg" alt="Mandazi">
+                    <img class="highlight-img" src="images/mandazi.jpg" alt="Mandazi" />
                     <div class="highlight-desc">
                         <h4>Mandazi</h4>
                         <p>Ksh.10</p>
                     </div>
                 </div>
                 <div class="highlight-card">
-                    <img class="highlight-img" src="images/tea.jpg" alt="Chai">
+                    <img class="highlight-img" src="images/tea.jpg" alt="Chai" />
                     <div class="highlight-desc">
                         <h4>Chai</h4>
                         <p>Ksh.20</p>
@@ -76,7 +80,7 @@
                 </div>
             </div>
         </div>
-   
+
         <div class="main-menus">
             <div class="main-filter">
                 <h2 class="main-title">Menu Category</h2>
@@ -135,115 +139,24 @@
                     </div>
                 </div>
             </div>
-            <hr class="divider">
+            <hr class="divider" />
             <div class="main-detal">
                 <h2 class="main-title">Choose Order</h2>
-                <div class="detail-wrapper">
-                <div class="detail-card">
-                    <img class="detail-img" src="images/fish.jpg" alt="">
-                    <div class="detail-desc">
-                        <div class="detail-name">
-                            <h4>samaki</h4>
-                            <p class="detail-sub">Straight from the lake</p>
-                            <p class="price">ksh.100</p>
-    
-                        </div>
-                        <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
-
-                    </div>
-                   
+                <div class="detail-wrapper" id="menu-wrapper">
+                    <!-- Food items will be dynamically inserted here from the database -->
                 </div>
-                <div class="detail-card">
-                    <img class="detail-img" src="images/nuts.jpg" alt="">
-                    <div class="detail-desc">
-                        <div class="detail-name">
-                            <h4>Njugu</h4>
-                            <p class="detail-sub">ongeza nguvu😂😂</p>
-                            <p class="price">ksh.40</p>
-
-                        </div>
-                        <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
-                    </div>
-
-                </div>
-                <div class="detail-card">
-                    <img class="detail-img" src="images/mandazi.jpg" alt="">
-                    <div class="detail-desc">
-                        <div class="detail-name">
-                            <h4>mandazi</h4>
-                            <p class="detail-sub">moto moto😂</p>
-                            <p class="price">ksh.10</p>
-
-                            
-                        </div>
-                        <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
-
-                    </div>
-
-                </div>
-                <div class="detail-card">
-                    <img class="detail-img" src="images/tea.jpg" alt="">
-                    <div class="detail-desc">
-                        <div class="detail-name">
-                            <h4>chai</h4>
-                            <p class="detail-sub">punguza baridi..sio lazma mpoa😂😂</p>
-                            <p class="price">ksh.20</p>
-
-                        </div>
-                        <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
-
-                    </div>
-
-                </div>
-                <div class="detail-card">
-                    <img class="detail-img" src="images/tea.jpg" alt="">
-                    <div class="detail-desc">
-                        <div class="detail-name">
-                            <h4>uji</h4>
-                            <p class="detail-sub">kwa wale hawakunywi maziwa</p>
-                            <p class="price">ksh.30</p>
-
-                        </div>
-                        <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
-
-                    </div>
-
-                </div>
-                <div class="detail-card">
-                    <img class="detail-img" src="images/fish.jpg" alt="">
-                    <div class="detail-desc">
-                        <div class="detail-name">
-                            <h4>Omena</h4>
-                            <p class="detail-sub">omena si ni tuduudu😂😂</p>
-                            <p class="price">ksh.40</p>
-
-                        </div>
-                        <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
-                    </div>
-
-                </div>
-                <div>
-
-                </div>
-
-
-                </div>
-
             </div>
-    
         </div>
-   
     </div>
-   <!-- Ionicons -->
-<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
-<!-- jQuery - MUST come before your app.js -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
-<!-- Your custom JS -->
-<script src="app.js"></script>
+    <!-- jQuery - MUST come before your app.js -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
+    <!-- Your custom JS -->
+    <script src="app.js"></script>
 </body>
-</html>
-
+                </html>
