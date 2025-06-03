@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Cart - Kibandaski Deliveries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;800&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h1 class="logo">DineDash</h1>
+    <div class="sidebar-menus">
+      <a href="index.html"><ion-icon name="storefront-outline"></ion-icon>Home</a>
+      <a href="bills.html"><ion-icon name="receipt-outline"></ion-icon>Bills</a>
+      <a href="#"><ion-icon name="wallet-outline"></ion-icon>Wallet</a>
+      <a href="#"><ion-icon name="notifications-outline"></ion-icon>Notifications</a>
+      <a href="#"><ion-icon name="chatbubbles-outline"></ion-icon>Contact Us</a>
+      <a href="add-food.html"><ion-icon name="shield-checkmark-outline"></ion-icon>admin</a>
+    </div>
+    <div class="sidebarlogout">
+      <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
+    </div>
+  </div>
+
+  <!-- Main Section -->
+  <div class="main">
+    <!-- Navbar -->
+    <div class="main-navbar">
+      <ion-icon class="menu-toggle" name="menu-outline"></ion-icon>
+      <div class="search">
+        <input type="text" placeholder="Unataka kukula nini?" />
+        <button class="search-btn">Search</button>
+      </div>
+      <div class="profile">
+        <a class="cart" href="#"><ion-icon name="cart-outline"></ion-icon></a>
+        <a class="user" href="#"><ion-icon name="person-outline"></ion-icon></a>
+      </div>
+    </div>
+
+    <!-- Cart Content -->
+    <div class="main-detal">
+      <h2 class="main-title">My Cart</h2>
+      <div class="cart-wrapper">
+
+        <!-- Sample Cart Item -->
+        <div class="cart-item">
+          <img src="images/mandazi.jpg" alt="Mandazi" class="cart-img" />
+          <div class="cart-details">
+            <h4>Mandazi</h4>
+            <p>Ksh. 10</p>
+            <div class="cart-controls">
+              <label>Qty:</label>
+              <input type="number" min="1" value="2" class="cart-qty" />
+              <button class="remove-btn">Remove</button>
+            </div>
+          </div>
+          <div class="cart-subtotal">
+            <strong>Ksh. 20</strong>
+          </div>
+        </div>
+
+        <!-- Add more .cart-item blocks dynamically with JS -->
+
+        <!-- Cart Summary -->
+        <div class="cart-summary">
+          <h3>Total: <span id="cart-total">Ksh. 20</span></h3>
+          <button class="checkout-btn">Proceed to Checkout</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Ionicons -->
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Optional: JavaScript to calculate total, remove item, etc. -->
+  <script>
+    // Simple script to update total dynamically
+    $(document).on('input', '.cart-qty', function () {
+      const item = $(this).closest('.cart-item');
+      const price = parseInt(item.find('p').text().replace('Ksh.', ''));
+      const qty = parseInt($(this).val());
+      const subtotal = price * qty;
+      item.find('.cart-subtotal strong').text('Ksh. ' + subtotal);
+
+      updateTotal();
+    });
+
+    $(document).on('click', '.remove-btn', function () {
+      $(this).closest('.cart-item').remove();
+      updateTotal();
+    });
+
+    function updateTotal() {
+      let total = 0;
+      $('.cart-subtotal strong').each(function () {
+        total += parseInt($(this).text().replace('Ksh.', ''));
+      });
+      $('#cart-total').text('Ksh. ' + total);
+    }
+  </script>
+</body>
+</html>
