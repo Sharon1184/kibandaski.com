@@ -1,10 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Add Food - Kibandaski Deliveries</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Add Food</title>
   <style>
     :root {
       --primarycolor: #0e6253;
@@ -17,71 +15,66 @@
     }
 
     body {
-      font-family: 'Open Sans', sans-serif;
-      background-color: var(--greycolor);
+      font-family: Arial, sans-serif;
+      background-color: var(--softgreencolor);
+      color: var(--blackcolor);
       margin: 0;
-      padding: 0;
+      padding: 2rem;
     }
 
-    .add-food-form {
+    h2 {
+      text-align: center;
+      color: var(--primarycolor);
+    }
+
+    form {
+      background-color: var(--whitecolor);
       padding: 2rem;
-      background: var(--softgreencolor);
       border-radius: 12px;
       max-width: 400px;
-      margin: 3rem auto;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      margin: 0 auto;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-    .add-food-form h2 {
-      color: var(--primarycolor);
-      text-align: center;
-    }
-
-    .add-food-form input,
-    .add-food-form textarea,
-    .add-food-form button {
+    input[type="text"],
+    input[type="number"],
+    input[type="file"] {
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
+      padding: 10px;
+      margin-bottom: 1rem;
       border: 1px solid var(--darkgreycolor);
       border-radius: 8px;
       font-size: 1rem;
     }
 
-    .add-food-form button {
-      background: var(--primarycolor);
+    button {
+      width: 100%;
+      background-color: var(--primarycolor);
       color: var(--whitecolor);
+      padding: 10px;
       border: none;
+      border-radius: 8px;
+      font-size: 1rem;
       cursor: pointer;
-      transition: background 0.3s ease;
+      transition: background-color 0.3s;
     }
 
-    .add-food-form button:hover {
-      background: var(--secondarycolor);
+    button:hover {
+      background-color: var(--secondarycolor);
       color: var(--blackcolor);
-    }
-
-    #formStatus {
-      text-align: center;
-      margin-top: 1rem;
     }
   </style>
 </head>
 <body>
+  <h2>Add New Food</h2>
+  <form id="foodForm">
+    <input type="text" id="name" placeholder="Food Name" required>
+    <input type="text" id="description" placeholder="Description" required>
+    <input type="number" id="price" placeholder="Price (Ksh)" required>
+    <input type="file" id="image" accept="image/*" required>
+    <button type="submit">Add Food</button>
+  </form>
 
-  <div class="add-food-form">
-    <h2>Add New Food</h2>
-    <form id="foodForm">
-      <input type="text" id="foodName" placeholder="Food Name" required />
-      <input type="text" id="foodPrice" placeholder="Price (Ksh)" required />
-      <input type="file" id="foodImage" accept="image/*" required />
-      <textarea id="foodDescription" placeholder="Description" required></textarea>
-      <button type="submit">Add Food</button>
-    </form>
-    <p id="formStatus"></p>
-  </div>
-
-  <!-- Firebase SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
@@ -100,42 +93,31 @@
     const db = getFirestore(app);
     const storage = getStorage(app);
 
-    document.getElementById("foodForm").addEventListener("submit", async (e) => {
+    const form = document.getElementById('foodForm');
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const name = document.getElementById("foodName").value;
-      const price = document.getElementById("foodPrice").value;
-      const imageFile = document.getElementById("foodImage").files[0];
-      const description = document.getElementById("foodDescription").value;
-      const status = document.getElementById("formStatus");
-a
-      if (!imageFile) {
-        status.textContent = "❌ Please choose an image file.";
-        return;
-      }
+      const name = document.getElementById('name').value;
+      const description = document.getElementById('description').value;
+      const price = document.getElementById('price').value;
+      const imageFile = document.getElementById('image').files[0];
 
-      try {
-        // Upload image to storage
-        const imageRef = ref(storage, `food-images/${Date.now()}_${imageFile.name}`);
-        await uploadBytes(imageRef, imageFile);
-        const imageUrl = await getDownloadURL(imageRef);
+      if (!imageFile) return alert("Please select an image.");
 
-        // Add food to Firestore
-        await addDoc(collection(db, "foods"), {
-          name,
-          price,
-          description,
-          image: imageUrl
-        });
+      const imageRef = ref(storage, 'foods/' + Date.now() + '_' + imageFile.name);
+      await uploadBytes(imageRef, imageFile);
+      const imageUrl = await getDownloadURL(imageRef);
 
-        status.textContent = "✅ Food added successfully!";
-        status.style.color = "green";
-        document.getElementById("foodForm").reset();
-      } catch (error) {
-        console.error("Error:", error);
-        status.textContent = "❌ Failed to upload food. Check console.";
-        status.style.color = "red";
-      }
+      await addDoc(collection(db, 'foods'), {
+        name,
+        description,
+        price,
+        imageUrl
+      });
+
+      alert('✅ Food item added successfully!');
+      form.reset();
     });
   </script>
 </body>
