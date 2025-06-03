@@ -188,6 +188,6 @@ behavior: "smooth"
 
 });
 
-}); update this
+}); 
 
   
