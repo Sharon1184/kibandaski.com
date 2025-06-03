@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Add Food with Image URL</title>
+  <title>Add Food</title>
   <style>
     :root {
       --primarycolor: #0e6253;
@@ -13,6 +13,7 @@
       --darkgreycolor: #a7a7a7;
       --greycolor: #f5f5f5;
     }
+
     body {
       font-family: Arial, sans-serif;
       background-color: var(--softgreencolor);
@@ -20,20 +21,24 @@
       margin: 0;
       padding: 2rem;
     }
+
     h2 {
       text-align: center;
       color: var(--primarycolor);
     }
+
     form {
       background-color: var(--whitecolor);
       padding: 2rem;
       border-radius: 12px;
       max-width: 400px;
       margin: 0 auto;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
+
     input[type="text"],
-    input[type="number"] {
+    input[type="number"],
+    input[type="file"] {
       width: 100%;
       padding: 10px;
       margin-bottom: 1rem;
@@ -41,6 +46,7 @@
       border-radius: 8px;
       font-size: 1rem;
     }
+
     button {
       width: 100%;
       background-color: var(--primarycolor);
@@ -52,6 +58,7 @@
       cursor: pointer;
       transition: background-color 0.3s;
     }
+
     button:hover {
       background-color: var(--secondarycolor);
       color: var(--blackcolor);
@@ -59,18 +66,19 @@
   </style>
 </head>
 <body>
-  <h2>Add New Food (with Image URL)</h2>
+  <h2>Add New Food</h2>
   <form id="foodForm">
     <input type="text" id="name" placeholder="Food Name" required />
     <input type="text" id="description" placeholder="Description" required />
     <input type="number" id="price" placeholder="Price (Ksh)" required />
-    <input type="text" id="imageUrl" placeholder="Image URL" required />
+    <input type="file" id="image" accept="image/*" required />
     <button type="submit">Add Food</button>
   </form>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-storage.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
@@ -83,6 +91,7 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const storage = getStorage(app);
 
     const form = document.getElementById("foodForm");
 
@@ -92,20 +101,22 @@
       const name = document.getElementById("name").value.trim();
       const description = document.getElementById("description").value.trim();
       const price = parseFloat(document.getElementById("price").value);
-      const imageUrl = document.getElementById("imageUrl").value.trim();
+      const imageFile = document.getElementById("image").files[0];
 
-      if (!name || !description || !price || !imageUrl) {
-        return alert("Please fill in all fields.");
+      if (!name || !description || !price || !imageFile) {
+        return alert("Please fill all fields and select an image.");
       }
 
-      // Optionally, validate URL format
-      try {
-        new URL(imageUrl);
-      } catch {
-        return alert("Please enter a valid image URL.");
+      if (!imageFile.type.startsWith("image/")) {
+        return alert("Please upload a valid image file.");
       }
 
       try {
+        const imageRef = ref(storage, 'foods/' + Date.now() + '_' + imageFile.name);
+        await uploadBytes(imageRef, imageFile);
+        const imageUrl = await getDownloadURL(imageRef);
+        console.log("✅ Image uploaded to:", imageUrl);
+
         await addDoc(collection(db, "foods"), {
           name,
           description,
@@ -116,8 +127,8 @@
         alert("✅ Food item added successfully!");
         form.reset();
       } catch (error) {
-        console.error("Error adding food:", error);
-        alert("Failed to add food item.");
+        console.error("❌ Error uploading food:", error);
+        alert("Something went wrong while adding the food. Check console for details.");
       }
     });
   </script>
