@@ -34,7 +34,7 @@ body {
     padding: 2%;
     background-color: var(--primarycolor);
     color: var(--whitecolor);
-    transition: 0.5s;
+    transition: 0s;
 }
 
 .sidebar-menus,
@@ -123,7 +123,7 @@ body {
 .profile {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.5rem;à
 }
 
 .cart, .user {
@@ -333,7 +333,7 @@ body {
     margin: 1% 0;
     box-shadow: rgba(176, 176, 176, 0.2) 0px 2px 8px 0px;
     cursor: pointer;
-    margin-top:5px;
+    margin-top:8px;
 }
 
 .detail-img {
@@ -522,13 +522,13 @@ a:focus, button:focus {
         height: 2.5rem;
         border-radius: 50%;
         z-index: 3;
-        transition: 0.5s;
+        transition: 1s;
     }
 
     .sidebar.active {
         display: flex;
         z-index: 10;
-        transition: 0.5s;
+        transition: 1s;
     }
     }
 
