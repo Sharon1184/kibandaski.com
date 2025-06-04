@@ -23,9 +23,50 @@
       margin: 0;
       display: flex;
     }
+        height: 100vh;
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 2%;
+    background-color: var(--primarycolor);
+    color: var(--whitecolor);
+    transition: 0.5s;
+}
 
+.sidebar-menus,
+.sidebarlogout {
+    display: flex;
+    flex-direction: column;
+}
 
+.sidebar-menus a,
+.sidebarlogout a {
+    padding: 5% 8%;
+    margin: 0.5rem 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 1rem;
+    text-decoration: none;
+    color: var(--whitecolor);
+    font-size: 1rem;
+}
 
+.sidebar-menus ion-icon,
+.sidebarlogout ion-icon {
+    font-size: 1.25rem;
+}
+
+.sidebar-menus a:hover,
+.sidebarlogout a:hover {
+    background-color: var(--secondarycolor);
+    border-radius: 50px;
+    transition: 0.5s;
+    }
     .main {
       flex: 1;
       padding: 2rem;
