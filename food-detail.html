@@ -7,7 +7,9 @@
   <link rel="stylesheet" href="style.css" />
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+    import {
+      getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, arrayUnion
+    } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
@@ -21,20 +23,26 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
+    // Generate or get a unique cart ID for this browser
+    let cartId = localStorage.getItem("cartId");
+    if (!cartId) {
+      cartId = "cart_" + Math.random().toString(36).substring(2);
+      localStorage.setItem("cartId", cartId);
+    }
+
     const params = new URLSearchParams(window.location.search);
     const foodName = params.get("name");
-
     let currentFood = null;
 
-    const addToCart = (food) => {
-      let cart = JSON.parse(localStorage.getItem("cart")) || [];
-      cart.push(food);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      updateCartCount();
-    };
+    const updateCartCount = async () => {
+      const cartRef = doc(db, "carts", cartId);
+      const cartSnap = await getDoc(cartRef);
 
-    const updateCartCount = () => {
-      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      let count = 0;
+      if (cartSnap.exists()) {
+        count = cartSnap.data().items.length || 0;
+      }
+
       const cartIcon = document.querySelector(".cart");
       let badge = document.querySelector(".cart-badge");
 
@@ -44,7 +52,27 @@
         cartIcon.appendChild(badge);
       }
 
-      badge.innerText = cart.length;
+      badge.innerText = count;
+    };
+
+    const addToCart = async () => {
+      if (!currentFood) return;
+
+      const cartRef = doc(db, "carts", cartId);
+      const cartSnap = await getDoc(cartRef);
+
+      if (cartSnap.exists()) {
+        await updateDoc(cartRef, {
+          items: arrayUnion(currentFood)
+        });
+      } else {
+        await setDoc(cartRef, {
+          items: [currentFood]
+        });
+      }
+
+      alert("Added to cart!");
+      updateCartCount();
     };
 
     const loadFoodDetail = async () => {
@@ -69,25 +97,18 @@
     };
 
     window.addEventListener("DOMContentLoaded", () => {
-      loadFoodDetail().then(() => {
-        document.getElementById("add-to-cart-btn").addEventListener("click", () => {
-          if (currentFood) {
-            addToCart(currentFood);
-            alert("Added to cart!");
-          }
-        });
-
-        updateCartCount();
-      });
+      loadFoodDetail();
+      document.getElementById("add-to-cart-btn").addEventListener("click", addToCart);
+      updateCartCount();
     });
   </script>
+
   <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons.js"></script>
 
   <style>
     .cart {
       position: relative;
     }
-
     .cart-badge {
       position: absolute;
       top: -5px;
@@ -98,43 +119,9 @@
       padding: 2px 6px;
       border-radius: 50%;
     }
-
-    .food-detail-container {
-      max-width: 600px;
-      margin: 80px auto;
-      text-align: center;
-      padding: 20px;
-    }
-
-    .food-img {
-      width: 100%;
-      max-height: 300px;
-      object-fit: cover;
-      border-radius: 10px;
-    }
-
-    .btn-primary,
-    .btn-secondary {
-      margin: 10px;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .btn-primary {
-      background-color: #ff6600;
-      color: white;
-    }
-
-    .btn-secondary {
-      background-color: #007bff;
-      color: white;
-    }
   </style>
 </head>
 <body>
-
   <div class="sidebar">
     <h1 class="logo">DineDash</h1>
     <div class="sidebar-menus">
@@ -143,7 +130,7 @@
       <a href="#"><ion-icon name="wallet-outline"></ion-icon>Wallet</a>
       <a href="#"><ion-icon name="notifications-outline"></ion-icon>Notifications</a>
       <a href="#"><ion-icon name="chatbubbles-outline"></ion-icon>Contact Us</a>
-      <a href="add-food.html"><ion-icon name="shield-checkmark-outline"></ion-icon>admin</a>
+      <a href="add-food.html"><ion-icon name="shield-checkmark-outline"></ion-icon>Admin</a>
       <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
     </div>
   </div>
@@ -168,6 +155,5 @@
       <button onclick="window.location.href='checkout.html'" class="btn-secondary">Proceed to Checkout</button>
     </div>
   </div>
-
 </body>
-        </html>
+</html>
