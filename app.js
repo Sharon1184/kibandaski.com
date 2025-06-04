@@ -190,5 +190,38 @@ behavior: "smooth"
 });
 
 }); 
+// Event delegation for clicks on food cards inside #menu-wrapper
+document.getElementById('menu-wrapper').addEventListener('click', function(e) {
+  // Find if the click was inside a .detail-card (or its child)
+  const card = e.target.closest('.detail-card');
+  if (!card) return;
 
+  // Extract details from clicked card
+  const img = card.querySelector('img.detail-img').src;
+  const name = card.querySelector('h4').textContent;
+  const description = card.querySelector('p.detail-sub').textContent;
+  const price = card.querySelector('p.price').textContent;
+
+  // Fill modal content
+  document.getElementById('modal-img').src = img;
+  document.getElementById('modal-img').alt = name;
+  document.getElementById('modal-name').textContent = name;
+  document.getElementById('modal-description').textContent = description;
+  document.getElementById('modal-price').textContent = price;
+
+  // Show modal
+  document.getElementById('food-modal').style.display = 'flex';
+});
+
+// Close modal on clicking X button
+document.getElementById('modal-close').addEventListener('click', function() {
+  document.getElementById('food-modal').style.display = 'none';
+});
+
+// Close modal when clicking outside the modal-content
+document.getElementById('food-modal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    this.style.display = 'none';
+  }
+});
   
