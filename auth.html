@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kibandaski Deliveries - Auth</title>
+ <link rel="stylesheet" href="styles.css"> 
   <style>
     :root {
       --primarycolor: #0e6253;
@@ -74,7 +75,31 @@
   </style>
 </head>
 <body>
+<div class="sidebar">
+        <h1 class="logo">DineDash</h1>
+        <div class="sidebar-menus">
+            <a href="index.html"><ion-icon name="storefront-outline"></ion-icon>Home</a>
+            <a href="bills.html"><ion-icon name="receipt-outline"></ion-icon>Bills</a>
+            <a href="#"><ion-icon name="wallet-outline"></ion-icon>Wallet</a>
+            <a href="#"><ion-icon name="notifications-outline"></ion-icon>Notifications</a>
+            <a href="#"><ion-icon name="chatbubbles-outline"></ion-icon>Contact Us</a>
+            <a href="add-food.html"><ion-icon name="shield-checkmark-outline"></ion-icon>admin</a>
+        </div>
+            <div class="sidebarlogout">
+      <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
+            </div>
+    </div>
 
+    <div class="main">
+        <div class="main-navbar">
+            <ion-icon class="menu-toggle" name="menu-outline"></ion-icon>
+            
+            <div class="profile">
+                <a class="cart" href="cart.html"><ion-icon name="cart-outline"></ion-icon></a>
+                <a class="user" href="auth.html"><ion-icon name="person-outline"></ion-icon></a>
+            </div>
+        </div>
+      
   <div class="form-container">
     <h2 id="formTitle">Login</h2>
     <form id="authForm">
