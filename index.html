@@ -24,9 +24,7 @@
             <a href="add-food.html"><ion-icon name="shield-checkmark-outline"></ion-icon>admin</a>
             <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
         </div>
-            <div class="sidebarlogout">
-      
-            </div>
+            <div class="sidebarlogout"></div>
     </div>
 
     <div class="main">
@@ -159,5 +157,17 @@
 
     <!-- Custom JS -->
     <script type="module" src="app.js"></script>
+
+    <!-- Inline script to handle food item clicks -->
+    <script>
+      $(document).ready(function() {
+        $('.highlight-card').click(function() {
+          const name = $(this).find('h4').text();
+          const price = $(this).find('p').text();
+          alert(`You tapped on ${name} which costs ${price}`);
+        });
+      });
+    </script>
+
 </body>
-                                                                                     </html>
+                </html>
