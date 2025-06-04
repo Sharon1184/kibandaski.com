@@ -13,6 +13,46 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+  import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    // your config
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  function getSessionId() {
+    return localStorage.getItem("sessionId");
+  }
+
+  const sessionId = getSessionId();
+
+  const loadCart = async () => {
+    const cartWrapper = document.querySelector(".cart-wrapper");
+    let total = 0;
+    const querySnapshot = await getDocs(collection(db, `carts/${sessionId}/items`));
+    querySnapshot.forEach((doc) => {
+      const food = doc.data();
+      total += Number(food.price);
+      cartWrapper.innerHTML += `
+        <div class="cart-item">
+          <img src="${food.imageUrl}" alt="${food.name}" class="cart-img" />
+          <div>
+            <h4>${food.name}</h4>
+            <p>Ksh. ${food.price}</p>
+          </div>
+        </div>
+      `;
+    });
+
+    document.getElementById("cart-total").innerText = "Ksh. " + total;
+  };
+
+  loadCart();
+    </script>
   <!-- Sidebar -->
   <div class="sidebar">
     <h1 class="logo">DineDash</h1>
