@@ -327,7 +327,7 @@ body {
 
 .detail-card {
     min-height: 200px;
-    height: 150%;
+    height: 130%;
     background-color: var(--whitecolor);
     border-radius: 8px;
     margin: 1% 0;
