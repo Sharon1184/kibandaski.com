@@ -51,28 +51,18 @@ const card = document.createElement("div");
 card.classList.add("detail-card");
 
 card.innerHTML = `
-
-  <img class="detail-img" src="${food.imageUrl}" alt="${food.name}">
-
-  <div class="detail-desc">
-
-    <div class="detail-name">
-
-      <h4>${food.name}</h4>
-      <p class="detail-sub">${food.description}</p>
-      <p class="price">ksh.${food.price}</p>
-      
-
-      
-
+  <a href="food-detail.html?name=${encodeURIComponent(food.name)}" style="text-decoration: none; color: inherit;">
+    <img class="detail-img" src="${food.imageUrl}" alt="${food.name}">
+    <div class="detail-desc">
+      <div class="detail-name">
+        <h4>${food.name}</h4>
+        <p class="detail-sub">${food.description}</p>
+        <p class="price">ksh.${food.price}</p>
+      </div>
+      <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
     </div>
-
-    <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
-
-  </div>
-
+  </a>
 `;
-
 
 
 menuWrapper.appendChild(card);
