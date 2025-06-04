@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Food Detail</title>
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Firebase & Cart Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import {
@@ -34,47 +36,7 @@
     const foodName = params.get("name");
     let currentFood = null;
 
-    const updateCartCount = async () => {
-      const cartRef = doc(db, "carts", cartId);
-      const cartSnap = await getDoc(cartRef);
-
-      let count = 0;
-      if (cartSnap.exists()) {
-        count = cartSnap.data().items.length || 0;
-      }
-
-      const cartIcon = document.querySelector(".cart");
-      let badge = document.querySelector(".cart-badge");
-
-      if (!badge) {
-        badge = document.createElement("sup");
-        badge.classList.add("cart-badge");
-        cartIcon.appendChild(badge);
-      }
-
-      badge.innerText = count;
-    };
-
-    const addToCart = async () => {
-      if (!currentFood) return;
-
-      const cartRef = doc(db, "carts", cartId);
-      const cartSnap = await getDoc(cartRef);
-
-      if (cartSnap.exists()) {
-        await updateDoc(cartRef, {
-          items: arrayUnion(currentFood)
-        });
-      } else {
-        await setDoc(cartRef, {
-          items: [currentFood]
-        });
-      }
-
-      alert("Added to cart!");
-      updateCartCount();
-    };
-
+    // Load food details from Firestore
     const loadFoodDetail = async () => {
       const querySnapshot = await getDocs(collection(db, "foods"));
       let found = false;
@@ -96,6 +58,50 @@
       }
     };
 
+    // Add item to Firestore cart
+    const addToCart = async () => {
+      if (!currentFood) return;
+
+      const cartRef = doc(db, "carts", cartId);
+      const cartSnap = await getDoc(cartRef);
+
+      if (cartSnap.exists()) {
+        await updateDoc(cartRef, {
+          items: arrayUnion(currentFood)
+        });
+      } else {
+        await setDoc(cartRef, {
+          items: [currentFood]
+        });
+      }
+
+      alert("✅ Added to cart!");
+      updateCartCount();
+    };
+
+    // Update the cart icon badge with item count
+    const updateCartCount = async () => {
+      const cartRef = doc(db, "carts", cartId);
+      const cartSnap = await getDoc(cartRef);
+
+      let count = 0;
+      if (cartSnap.exists()) {
+        count = cartSnap.data().items?.length || 0;
+      }
+
+      const cartIcon = document.querySelector(".cart");
+      let badge = document.querySelector(".cart-badge");
+
+      if (!badge) {
+        badge = document.createElement("sup");
+        badge.classList.add("cart-badge");
+        cartIcon.appendChild(badge);
+      }
+
+      badge.innerText = count;
+    };
+
+    // Event listeners
     window.addEventListener("DOMContentLoaded", () => {
       loadFoodDetail();
       document.getElementById("add-to-cart-btn").addEventListener("click", addToCart);
@@ -103,8 +109,10 @@
     });
   </script>
 
+  <!-- Ionicons -->
   <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons.js"></script>
 
+  <!-- Inline badge style -->
   <style>
     .cart {
       position: relative;
@@ -121,7 +129,9 @@
     }
   </style>
 </head>
+
 <body>
+  <!-- Sidebar -->
   <div class="sidebar">
     <h1 class="logo">DineDash</h1>
     <div class="sidebar-menus">
@@ -135,17 +145,18 @@
     </div>
   </div>
 
+  <!-- Main Section -->
   <div class="main">
+    <!-- Navbar -->
     <div class="main-navbar">
       <ion-icon class="menu-toggle" name="menu-outline"></ion-icon>
-
       <div class="profile">
         <a class="cart" href="cart.html"><ion-icon name="cart-outline"></ion-icon></a>
         <a class="user" href="auth.html"><ion-icon name="person-outline"></ion-icon></a>
       </div>
     </div>
 
-    <!-- Food Detail -->
+    <!-- Food Detail Display -->
     <div class="food-detail-container">
       <img id="food-img" alt="Food Image" class="food-img" />
       <h1 id="food-title"></h1>
@@ -156,4 +167,4 @@
     </div>
   </div>
 </body>
-</html>
+      </html>
