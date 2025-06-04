@@ -24,6 +24,29 @@
     const params = new URLSearchParams(window.location.search);
     const foodName = params.get("name");
 
+    let currentFood = null;
+
+    const addToCart = (food) => {
+      let cart = JSON.parse(localStorage.getItem("cart")) || [];
+      cart.push(food);
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartCount();
+    };
+
+    const updateCartCount = () => {
+      const cart = JSON.parse(localStorage.getItem("cart")) || [];
+      const cartIcon = document.querySelector(".cart");
+      let badge = document.querySelector(".cart-badge");
+
+      if (!badge) {
+        badge = document.createElement("sup");
+        badge.classList.add("cart-badge");
+        cartIcon.appendChild(badge);
+      }
+
+      badge.innerText = cart.length;
+    };
+
     const loadFoodDetail = async () => {
       const querySnapshot = await getDocs(collection(db, "foods"));
       let found = false;
@@ -32,6 +55,7 @@
         const food = doc.data();
         if (food.name === foodName) {
           found = true;
+          currentFood = food;
           document.getElementById("food-img").src = food.imageUrl;
           document.getElementById("food-title").innerText = food.name;
           document.getElementById("food-desc").innerText = food.description;
@@ -44,47 +68,106 @@
       }
     };
 
-    loadFoodDetail();
+    window.addEventListener("DOMContentLoaded", () => {
+      loadFoodDetail().then(() => {
+        document.getElementById("add-to-cart-btn").addEventListener("click", () => {
+          if (currentFood) {
+            addToCart(currentFood);
+            alert("Added to cart!");
+          }
+        });
+
+        updateCartCount();
+      });
+    });
   </script>
   <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons.js"></script>
+
+  <style>
+    .cart {
+      position: relative;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -10px;
+      background-color: red;
+      color: white;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 50%;
+    }
+
+    .food-detail-container {
+      max-width: 600px;
+      margin: 80px auto;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .food-img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+      margin: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background-color: #ff6600;
+      color: white;
+    }
+
+    .btn-secondary {
+      background-color: #007bff;
+      color: white;
+    }
+  </style>
 </head>
 <body>
 
   <div class="sidebar">
-        <h1 class="logo">DineDash</h1>
-        <div class="sidebar-menus">
-            <a href="index.html"><ion-icon name="storefront-outline"></ion-icon>Home</a>
-            <a href="bills.html"><ion-icon name="receipt-outline"></ion-icon>Bills</a>
-            <a href="#"><ion-icon name="wallet-outline"></ion-icon>Wallet</a>
-            <a href="#"><ion-icon name="notifications-outline"></ion-icon>Notifications</a>
-            <a href="#"><ion-icon name="chatbubbles-outline"></ion-icon>Contact Us</a>
-            <a href="add-food.html"><ion-icon name="shield-checkmark-outline"></ion-icon>admin</a>
-            <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
-        </div>
-            <div class="sidebarlogout">
-      
-            </div>
+    <h1 class="logo">DineDash</h1>
+    <div class="sidebar-menus">
+      <a href="index.html"><ion-icon name="storefront-outline"></ion-icon>Home</a>
+      <a href="bills.html"><ion-icon name="receipt-outline"></ion-icon>Bills</a>
+      <a href="#"><ion-icon name="wallet-outline"></ion-icon>Wallet</a>
+      <a href="#"><ion-icon name="notifications-outline"></ion-icon>Notifications</a>
+      <a href="#"><ion-icon name="chatbubbles-outline"></ion-icon>Contact Us</a>
+      <a href="add-food.html"><ion-icon name="shield-checkmark-outline"></ion-icon>admin</a>
+      <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="main-navbar">
+      <ion-icon class="menu-toggle" name="menu-outline"></ion-icon>
+
+      <div class="profile">
+        <a class="cart" href="cart.html"><ion-icon name="cart-outline"></ion-icon></a>
+        <a class="user" href="auth.html"><ion-icon name="person-outline"></ion-icon></a>
+      </div>
     </div>
 
-    <div class="main">
-        <div class="main-navbar">
-            <ion-icon class="menu-toggle" name="menu-outline"></ion-icon>
-            
-            <div class="profile">
-                <a class="cart" href="cart.html"><ion-icon name="cart-outline"></ion-icon></a>
-                <a class="user" href="auth.html"><ion-icon name="person-outline"></ion-icon></a>
-            </div>
-        </div>
-
-  <!-- Food Detail -->
-  <div class="food-detail-container">
-    <img id="food-img" alt="Food Image" class="food-img" />
-    <h1 id="food-title"></h1>
-    <p id="food-desc"></p>
-    <h3 id="food-price"></h3>
-    <button onclick="alert('Added to cart!')" class="btn-primary">Add to Cart</button>
-    <button onclick="window.location.href='checkout.html'" class="btn-secondary">Proceed to Checkout</button>
+    <!-- Food Detail -->
+    <div class="food-detail-container">
+      <img id="food-img" alt="Food Image" class="food-img" />
+      <h1 id="food-title"></h1>
+      <p id="food-desc"></p>
+      <h3 id="food-price"></h3>
+      <button id="add-to-cart-btn" class="btn-primary">Add to Cart</button>
+      <button onclick="window.location.href='checkout.html'" class="btn-secondary">Proceed to Checkout</button>
+    </div>
   </div>
-<script src="app.js"></script>
+
 </body>
-</html>
+        </html>
