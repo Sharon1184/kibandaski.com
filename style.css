@@ -361,6 +361,7 @@ body {
 
 .price {
     color: var(--primarycolor);
+    margin-top:5px;
 }
 
 .detail-favourite {
