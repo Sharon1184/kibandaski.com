@@ -333,6 +333,7 @@ body {
     margin: 1% 0;
     box-shadow: rgba(176, 176, 176, 0.2) 0px 2px 8px 0px;
     cursor: pointer;
+    margin-top:5px;
 }
 
 .detail-img {
