@@ -4,6 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kibandaski Deliveries</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
+    rel="stylesheet"
+  />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -15,9 +21,10 @@
       <a href="#"><ion-icon name="wallet-outline"></ion-icon>Wallet</a>
       <a href="#"><ion-icon name="notifications-outline"></ion-icon>Notifications</a>
       <a href="#"><ion-icon name="chatbubbles-outline"></ion-icon>Contact Us</a>
-      <a href="add-food.html"><ion-icon name="shield-checkmark-outline"></ion-icon>Admin</a>
+      <a href="add-food.html"><ion-icon name="shield-checkmark-outline"></ion-icon>admin</a>
       <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
     </div>
+    <div class="sidebarlogout"></div>
   </div>
 
   <div class="main">
@@ -42,15 +49,7 @@
         </div>
       </div>
       <div class="highlight-wrapper">
-        <!-- Static sample items -->
-        <div class="highlight-card">
-          <img class="highlight-img" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSw0cfI-qUneVqrDwGR9FxwJEQgElgkJ413sw&s" alt="Njugu" />
-          <div class="highlight-desc">
-            <h4>Njugu</h4>
-            <p>Ksh.10</p>
-          </div>
-        </div>
-        <!-- Add more cards as needed -->
+        <!-- Static cards -->
       </div>
     </div>
 
@@ -62,30 +61,16 @@
           <ion-icon class="next-menus" name="chevron-forward-circle-outline"></ion-icon>
         </div>
         <div class="filter-wrapper">
-          <div class="filter-card"><ion-icon name="restaurant-outline"></ion-icon><p>All</p></div>
-          <!-- Add more filter cards -->
+          <!-- Filter icons -->
         </div>
       </div>
-
       <hr class="divider" />
-
       <div class="main-detal">
         <h2 class="main-title">Choose Order</h2>
         <div class="detail-wrapper" id="menu-wrapper">
-          <!-- Food items from Firebase will appear here -->
+          <!-- Food items loaded from Firebase will appear here -->
         </div>
       </div>
-    </div>
-  </div>
-
-  <!-- Food Modal -->
-  <div id="food-modal" class="modal">
-    <div class="modal-content">
-      <span id="modal-close" class="modal-close">&times;</span>
-      <img id="modal-img" src="" alt="" />
-      <h2 id="modal-name"></h2>
-      <p id="modal-description"></p>
-      <p id="modal-price"></p>
     </div>
   </div>
 
@@ -93,68 +78,10 @@
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
-  <!-- Firebase and App Script -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
-      authDomain: "food-ae7ff.firebaseapp.com",
-      projectId: "food-ae7ff",
-      storageBucket: "food-ae7ff.appspot.com",
-      messagingSenderId: "1058214228504",
-      appId: "1:1058214228504:web:f1f059be00c9aeaf7cc96d"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    const menuWrapper = document.getElementById("menu-wrapper");
-
-    async function loadFoods() {
-      const querySnapshot = await getDocs(collection(db, "foods"));
-      querySnapshot.forEach((doc) => {
-        const food = doc.data();
-        const card = document.createElement("div");
-        card.classList.add("detail-card");
-        card.innerHTML = `
-          <img class="detail-img" src="${food.imageUrl}" alt="${food.name}">
-          <div class="detail-desc">
-            <div class="detail-name">
-              <h4>${food.name}</h4>
-              <p class="detail-sub">${food.description}</p>
-              <p class="price">ksh.${food.price}</p>
-            </div>
-            <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
-          </div>
-        `;
-
-        card.addEventListener("click", () => {
-          document.getElementById("modal-img").src = food.imageUrl;
-          document.getElementById("modal-name").textContent = food.name;
-          document.getElementById("modal-description").textContent = food.description;
-          document.getElementById("modal-price").textContent = "Ksh. " + food.price;
-          document.getElementById("food-modal").style.display = "flex";
-        });
-
-        menuWrapper.appendChild(card);
-      });
-    }
-
-    loadFoods();
-
-    // Modal close button
-    document.getElementById("modal-close").addEventListener("click", () => {
-      document.getElementById("food-modal").style.display = "none";
-    });
-
-    // Optional: Close modal when clicking outside the modal content
-    window.addEventListener("click", (e) => {
-      if (e.target === document.getElementById("food-modal")) {
-        document.getElementById("food-modal").style.display = "none";
-      }
-    });
-  </script>
+  <!-- Firebase app.js -->
+  <script type="module" src="app.js"></script>
 </body>
-            </html>
+</html>
