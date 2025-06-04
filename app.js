@@ -59,10 +59,11 @@ card.innerHTML = `
     <div class="detail-name">
 
       <h4>${food.name}</h4>
+      
+      <p class="price">ksh.${food.price}</p>
+      
 
       <p class="detail-sub">${food.description}</p>
-
-      <p class="price">ksh.${food.price}</p>
 
     </div>
 
