@@ -13,6 +13,7 @@
       display: flex;
       align-items: center;
       margin: 10px 0;
+      justify-content: space-between;
     }
     .cart-img {
       width: 80px;
@@ -20,6 +21,18 @@
       object-fit: cover;
       margin-right: 15px;
       border-radius: 10px;
+    }
+    .cart-info {
+      flex-grow: 1;
+    }
+    .remove-btn {
+      background-color: #ff4d4d;
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
     }
     .cart-summary {
       margin-top: 20px;
@@ -41,7 +54,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import {
-      getFirestore, doc, getDoc
+      getFirestore, doc, getDoc, updateDoc
     } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -60,6 +73,7 @@
 
     const loadCart = async () => {
       const cartWrapper = document.querySelector(".cart-wrapper");
+      cartWrapper.innerHTML = ""; // Clear previous items
       const cartRef = doc(db, "carts", cartId);
       const cartSnap = await getDoc(cartRef);
 
@@ -68,17 +82,28 @@
       if (cartSnap.exists()) {
         const items = cartSnap.data().items || [];
 
-        items.forEach((food) => {
+        items.forEach((food, index) => {
           total += Number(food.price);
           cartWrapper.innerHTML += `
             <div class="cart-item">
               <img src="${food.imageUrl}" alt="${food.name}" class="cart-img" />
-              <div>
+              <div class="cart-info">
                 <h4>${food.name}</h4>
                 <p>Ksh. ${food.price}</p>
               </div>
+              <button class="remove-btn" data-index="${index}">Remove</button>
             </div>
           `;
+        });
+
+        // Attach remove handlers after rendering
+        document.querySelectorAll(".remove-btn").forEach(button => {
+          button.addEventListener("click", async (e) => {
+            const idx = e.target.getAttribute("data-index");
+            items.splice(idx, 1); // remove item at index
+            await updateDoc(cartRef, { items }); // update Firestore
+            loadCart(); // refresh UI
+          });
         });
       }
 
@@ -108,10 +133,6 @@
   <div class="main">
     <div class="main-navbar">
       <ion-icon class="menu-toggle" name="menu-outline"></ion-icon>
-      <div class="search">
-        <input type="text" placeholder="Unataka kukula nini?" />
-        <button class="search-btn">Search</button>
-      </div>
       <div class="profile">
         <a class="cart" href="#"><ion-icon name="cart-outline"></ion-icon></a>
         <a class="user" href="#"><ion-icon name="person-outline"></ion-icon></a>
