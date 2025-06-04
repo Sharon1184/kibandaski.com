@@ -54,7 +54,7 @@ card.innerHTML = `
 
   <img class="detail-img" src="${food.imageUrl}" alt="${food.name}">
 
-  <div class="detail-desc">
+  <div class="detail-des">
 
     <div class="detail-name">
 
