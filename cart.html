@@ -94,7 +94,9 @@
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-  import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+  import {
+    getFirestore, doc, getDoc, updateDoc
+  } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
@@ -115,6 +117,13 @@
     toast.innerText = msg;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
+  };
+
+  const calculateDeliveryFee = (total) => {
+    if (total <= 100) return 15;
+    const extra = total - 100;
+    const steps = Math.ceil(extra / 10);
+    return 15 + (steps * 2);
   };
 
   const loadCart = async () => {
@@ -157,7 +166,7 @@
         `;
       });
 
-      // Event Listeners
+      // Button actions
       document.querySelectorAll(".remove-btn").forEach(button => {
         button.addEventListener("click", async (e) => {
           const idx = e.target.getAttribute("data-index");
@@ -195,18 +204,10 @@
       document.getElementById("item-count").innerText = `${items.length} items`;
     }
 
-    // Delivery Fee Calculation
-    const cartTotal = total;
-    let deliveryFee = 15;
-    if (cartTotal > 100) {
-      deliveryFee += Math.floor((cartTotal - 100) / 50) * 5;
-    }
-    const grandTotal = cartTotal + deliveryFee;
+    const deliveryFee = calculateDeliveryFee(total);
+    const totalWithDelivery = total + deliveryFee;
 
-    document.getElementById("cart-total").innerText = "Ksh. " + cartTotal;
-    document.getElementById("delivery-fee").innerText = "Ksh. " + deliveryFee;
-    document.getElementById("total-amount").innerText = "Ksh. " + grandTotal;
-
+    document.getElementById("cart-total").innerText = `Ksh. ${total} + Delivery (${deliveryFee}) = Ksh. ${totalWithDelivery}`;
     loading.style.display = "none";
   };
 
@@ -244,9 +245,7 @@
     <div class="cart-wrapper"></div>
 
     <div class="cart-summary">
-      <h3>Cart Total: <span id="cart-total">Ksh. 0</span></h3>
-      <p>Delivery Fee: <span id="delivery-fee">Ksh. 0</span></p>
-      <h3>Total With Delivery: <span id="total-amount">Ksh. 0</span></h3>
+      <h3>Total: <span id="cart-total">Ksh. 0</span></h3>
       <p class="note">Estimated Delivery: 30–45 mins</p>
       <button class="checkout-btn" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
     </div>
@@ -282,4 +281,4 @@
   });
 </script>
 </body>
-  </html>
+</html>
