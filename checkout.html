@@ -1,9 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Checkout - Kibandaski</title>
-  <link rel="stylesheet" href="style.css" />
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,7 +10,7 @@
       background-color: #f9f9f9;
     }
     .summary {
-      max-width: 600px;
+      max-width: 500px;
       margin: auto;
       background: #fff;
       padding: 20px;
@@ -40,9 +39,6 @@
       font-weight: bold;
       color: #555;
     }
-    ul {
-      margin-top: 0;
-    }
   </style>
 </head>
 <body>
@@ -50,22 +46,18 @@
   <div class="summary">
     <div>
       <label for="fullName">Full Name:</label>
-      <input id="fullName" type="text" placeholder="e.g., Jane Doe" />
+      <input id="fullName" type="text" placeholder="e.g., Jane Doe">
     </div>
     <div>
       <label for="phone">Phone Number:</label>
-      <input id="phone" type="text" placeholder="e.g., 07XXXXXXXX" />
+      <input id="phone" type="text" placeholder="e.g., 07XXXXXXXX">
     </div>
     <div>
       <label for="address">Delivery Address:</label>
-      <input id="address" type="text" placeholder="e.g., Hostel A Room 12" />
+      <input id="address" type="text" placeholder="e.g., Hostel A Room 12">
     </div>
-
-    <div id="orderItems"></div>
-
     <div><strong>Delivery Fee:</strong> Ksh <span id="deliveryFee">0</span></div>
     <div><strong>Total Amount:</strong> Ksh <span id="grandTotal">0</span></div>
-
     <button class="btn" onclick="submitOrder()">Place Order</button>
     <div id="statusMessage"></div>
   </div>
@@ -75,7 +67,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
 
   <script>
-    // Firebase config
+    // ✅ 1. Firebase Config
     const firebaseConfig = {
       apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
       authDomain: "food-ae7ff.firebaseapp.com",
@@ -87,31 +79,15 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.firestore();
 
+    // ✅ 2. Get Cart from localStorage
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    let cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    let deliveryFee = 0;
+    const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-    // Show cart items
-    function renderCartItems() {
-      const orderDiv = document.getElementById("orderItems");
-      if (!cart.length) {
-        orderDiv.innerHTML = "<p>No items in cart.</p>";
-        return;
-      }
-
-      let html = "<h3>Order Summary</h3><ul>";
-      cart.forEach(item => {
-        html += `<li>${item.name} x ${item.quantity} — Ksh ${item.price * item.quantity}</li>`;
-      });
-      html += `</ul><p><strong>Subtotal:</strong> Ksh ${cartTotal}</p>`;
-      orderDiv.innerHTML = html;
-    }
-    renderCartItems();
-
-    // New delivery fee logic (no distance)
-    function calculateDeliveryFee() {
-      if (cartTotal <= 100) return 15;
-      return 15 + Math.ceil((cartTotal - 100) / 5);
+    // ✅ 3. Delivery fee logic (Fixed version)
+    function calculateDeliveryFee(address) {
+      const words = address.trim().split(/\s+/).length;
+      if (words <= 2) return 15; // assume short location = nearby
+      return 15 + (words - 2) * 1; // +1 bob per word after the first two
     }
 
     async function submitOrder() {
@@ -125,47 +101,54 @@
         return;
       }
 
-      // Calculate delivery fee and total
-      deliveryFee = calculateDeliveryFee();
+      const deliveryFee = calculateDeliveryFee(address);
       const grandTotal = cartTotal + deliveryFee;
+
       document.getElementById("deliveryFee").textContent = deliveryFee;
       document.getElementById("grandTotal").textContent = grandTotal;
 
-      // Save order
       statusDiv.textContent = "Placing order...";
-      const orderRef = await db.collection("orders").add({
-        fullName,
-        phone,
-        address,
-        items: cart,
-        total: cartTotal,
-        deliveryFee,
-        grandTotal,
-        status: "Pending",
-        createdAt: firebase.firestore.FieldValue.serverTimestamp()
-      });
 
-      statusDiv.textContent = "Order placed. Waiting for approval...";
+      try {
+        // ✅ 4. Save order to Firebase
+        const orderRef = await db.collection("orders").add({
+          fullName,
+          phone,
+          address,
+          items: cart,
+          total: cartTotal,
+          deliveryFee,
+          grandTotal,
+          status: "Pending",
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
 
-      // Listen for order status
-      db.collection("orders").doc(orderRef.id).onSnapshot((doc) => {
-        const data = doc.data();
-        if (data.status === "Taken") {
-          statusDiv.textContent = "Order accepted. Sending payment prompt...";
-          triggerMpesa(phone, grandTotal);
-        } else if (data.status === "Denied") {
-          statusDiv.textContent = "Sorry, your order was denied.";
-        }
-      });
+        statusDiv.textContent = "Order placed. Waiting for approval...";
+
+        // ✅ 5. Listen for order status update
+        db.collection("orders").doc(orderRef.id).onSnapshot((doc) => {
+          const data = doc.data();
+          if (data.status === "Taken") {
+            statusDiv.textContent = "Order accepted. Sending payment prompt...";
+            triggerMpesa(phone, grandTotal);
+          } else if (data.status === "Denied") {
+            statusDiv.textContent = "Sorry, your order was denied.";
+          }
+        });
+
+      } catch (error) {
+        console.error("Error saving order:", error);
+        statusDiv.textContent = "Order failed. Try again.";
+      }
     }
 
-    // Mpesa payment
+    // ✅ 6. TinyPesa Payment
     function triggerMpesa(phone, amount) {
       fetch("https://tinypesa.com/api/v1/express/initialize", {
         method: "POST",
         headers: {
           "Content-Type": "application/x-www-form-urlencoded",
-          "ApiKey": "aCkyQr2ZmwpeNRwu9ODULaduvG1ilceZ9TZT-FVe"
+          "ApiKey": "aCkyQr2ZmwpeNRwu9ODULaduvG1ilceZ9TZT-FVe" // your TinyPesa key
         },
         body: new URLSearchParams({
           amount,
@@ -181,7 +164,7 @@
       })
       .catch(err => {
         console.error("Mpesa error:", err);
-        document.getElementById("statusMessage").textContent = "Payment failed. Please try again.";
+        document.getElementById("statusMessage").textContent = "Payment failed. Try again.";
       });
     }
   </script>
