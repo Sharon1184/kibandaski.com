@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Checkout - Kibandaski Deliveries</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;800&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    body {
+      font-family: 'Open Sans', sans-serif;
+      margin: 0;
+      background: #f9f9f9;
+      color: #333;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: 220px;
+      background-color: #222;
+      color: white;
+      padding: 20px;
+      box-sizing: border-box;
+      overflow-y: auto;
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+    .sidebar.active {
+      transform: translateX(0);
+    }
+    .sidebar h1.logo {
+      font-weight: 800;
+      margin-bottom: 40px;
+      font-size: 24px;
+    }
+    .sidebar-menus a, .sidebarlogout a {
+      display: flex;
+      align-items: center;
+      color: white;
+      text-decoration: none;
+      margin: 15px 0;
+      font-weight: 600;
+      gap: 10px;
+      font-size: 16px;
+    }
+    .sidebarlogout {
+      position: absolute;
+      bottom: 20px;
+      width: 180px;
+    }
+    .main {
+      margin-left: 220px;
+      padding: 20px 30px;
+      transition: margin-left 0.3s ease;
+    }
+    .main-navbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .menu-toggle {
+      font-size: 30px;
+      cursor: pointer;
+      color: #222;
+    }
+    .profile a {
+      font-size: 25px;
+      margin-left: 20px;
+      color: #222;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .main-title {
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .checkout-summary {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      max-width: 500px;
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+    }
+    .checkout-summary h3 {
+      margin-bottom: 10px;
+      font-weight: 700;
+    }
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+      font-size: 18px;
+    }
+    .summary-row.total {
+      font-weight: 800;
+      font-size: 20px;
+      border-top: 1px solid #ddd;
+      padding-top: 10px;
+    }
+    form {
+      margin-top: 30px;
+      max-width: 500px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgb(0 0 0 / 0.1);
+    }
+    form label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    form input, form textarea {
+      width: 100%;
+      padding: 8px 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+      font-family: inherit;
+      box-sizing: border-box;
+    }
+    form textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    .place-order-btn {
+      padding: 12px 20px;
+      background-color: green;
+      border: none;
+      border-radius: 7px;
+      color: white;
+      font-weight: 700;
+      font-size: 18px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+    .place-order-btn:hover {
+      background-color: #0a6a0a;
+    }
+    .order-status {
+      margin-top: 30px;
+      max-width: 500px;
+      background: #e7f5e1;
+      border-left: 6px solid green;
+      padding: 15px 20px;
+      font-weight: 700;
+      font-size: 18px;
+      border-radius: 5px;
+      display: none;
+    }
+    @media (max-width: 768px) {
+      .main {
+        margin-left: 0;
+        padding: 15px;
+      }
+      .sidebar {
+        transform: translateX(-100%);
+      }
+      .sidebar.active {
+        transform: translateX(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h1 class="logo">DineDash</h1>
+    <div class="sidebar-menus">
+      <a href="index.html"><ion-icon name="storefront-outline"></ion-icon>Home</a>
+      <a href="bills.html"><ion-icon name="receipt-outline"></ion-icon>Bills</a>
+      <a href="#"><ion-icon name="wallet-outline"></ion-icon>Wallet</a>
+      <a href="#"><ion-icon name="notifications-outline"></ion-icon>Notifications</a>
+      <a href="#"><ion-icon name="chatbubbles-outline"></ion-icon>Contact Us</a>
+      <a href="add-food.html"><ion-icon name="shield-checkmark-outline"></ion-icon>Admin</a>
+    </div>
+    <div class="sidebarlogout">
+      <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
+    </div>
+  </div>
+
+  <!-- Main Section -->
+  <div class="main">
+    <div class="main-navbar">
+      <ion-icon class="menu-toggle" name="menu-outline"></ion-icon>
+      <div class="profile">
+        <a class="cart" href="cart.html"><ion-icon name="cart-outline"></ion-icon></a>
+        <a class="user" href="#"><ion-icon name="person-outline"></ion-icon></a>
+      </div>
+    </div>
+
+    <h2 class="main-title">Checkout</h2>
+
+    <div class="checkout-summary">
+      <h3>Order Summary</h3>
+      <div class="summary-row">
+        <span>Subtotal:</span>
+        <span id="subtotal">Ksh. 0</span>
+      </div>
+      <div class="summary-row">
+        <span>Delivery Fee:</span>
+        <span id="deliveryFee">Ksh. 0</span>
+      </div>
+      <div class="summary-row total">
+        <span>Total:</span>
+        <span id="grandTotal">Ksh. 0</span>
+      </div>
+      <p class="note">Estimated Delivery: 30–45 mins</p>
+    </div>
+
+    <form id="orderForm">
+      <h3>Delivery Details</h3>
+
+      <label for="fullName">Full Name</label>
+      <input type="text" id="fullName" name="fullName" required />
+
+      <label for="phone">Phone Number</label>
+      <input
+        type="tel"
+        id="phone"
+        name="phone"
+        pattern="[0-9]{9,15}"
+        placeholder="e.g. 0712345678"
+        required
+      />
+
+      <label for="address">Delivery Address</label>
+      <textarea id="address" name="address" required></textarea>
+
+      <button type="submit" class="place-order-btn">Place Order & Pay (Mpesa)</button>
+    </form>
+
+    <div class="order-status" id="orderStatus"></div>
+  </div>
+
+  <!-- Ionicons -->
+  <script
+    type="module"
+    src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"
+  ></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+  <script>
+    // Initialize Firebase (replace config with your own Firebase config)
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_AUTH_DOMAIN",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_STORAGE_BUCKET",
+      messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+      appId: "YOUR_APP_ID"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Sidebar toggle script (same as cart)
+    document.addEventListener("DOMContentLoaded", () => {
+      const menuToggle = document.querySelector(".menu-toggle");
+      const sidebar = document.querySelector(".sidebar");
+
+      menuToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        sidebar.classList.toggle("active");
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+          sidebar.classList.remove("active");
+        }
+      });
+
+      sidebar.addEventListener("click", (e) => {
+        if (e.target.tagName === "A") {
+          sidebar.classList.remove("active");
+        } else {
+          e.stopPropagation();
+        }
+      });
+    });
+
+    // Load totals from localStorage and show in summary
+    document.addEventListener("DOMContentLoaded", () => {
+      const subtotal = localStorage.getItem("subtotal") || 0;
+      const deliveryFee = localStorage.getItem("deliveryFee") || 0;
+      const grandTotal = localStorage.getItem("grandTotal") || 0;
+
+      document.getElementById("subtotal").innerText = `Ksh. ${subtotal}`;
+      document.getElementById("deliveryFee").innerText = `Ksh. ${deliveryFee}`;
+      document.getElementById("grandTotal").innerText = `Ksh. ${grandTotal}`;
+    });
+
+    // Simulate Mpesa STK Push payment (replace this with your real API call backend)
+    function initiateMpesaPayment(phone, amount) {
+      return new Promise((resolve) => {
+        // Simulate API delay
+        setTimeout(() => {
+          // Simulate success response
+          resolve({ success: true, message: "STK Push sent to phone " + phone });
+        }, 3000);
+      });
+    }
+
+    // Listen to order status changes (for real-time tracking)
+    function listenToOrderStatus(orderId) {
+      const statusDiv = document.getElementById("orderStatus");
+      const orderRef = db.collection("orders").doc(orderId);
+
+      statusDiv.style.display = "block";
+      statusDiv.innerText = "Waiting for order confirmation...";
+
+      orderRef.onSnapshot((doc) => {
+        if (doc.exists) {
+          const status = doc.data().status || "Pending";
+          statusDiv.innerText = `Order Status: ${status}`;
+          if (status === "Delivered") {
+            statusDiv.style.borderLeftColor = "blue";
+          } else if (status === "Cancelled") {
+            statusDiv.style.borderLeftColor = "red";
+          }
+        } else {
+          statusDiv.innerText = "Order not found";
+        }
+      });
+    }
+
+    // Handle form submission
+    document.getElementById("orderForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const fullName = e.target.fullName.value.trim();
+      const phone = e.target.phone.value.trim();
+      const address = e.target.address.value.trim();
+
+      if (!fullName || !phone || !address) {
+        alert("Please fill in all the required fields.");
+        return;
+      }
+
+      const subtotal = parseFloat(localStorage.getItem("subtotal") || 0);
+      const deliveryFee = parseFloat(localStorage.getItem("deliveryFee") || 0);
+      const grandTotal = parseFloat(localStorage.getItem("grandTotal") || 0);
+      const cartId = localStorage.getItem("cartId") || "[]";
+      const cartItems = JSON.parse(cartId);
+
+      if (cartItems.length === 0) {
+        alert("Your cart is empty!");
+        return;
+      }
+
+      // Disable the button to prevent multiple submits
+      const btn = e.target.querySelector(".place-order-btn");
+      btn.disabled = true;
+      btn.innerText = "Processing payment...";
+
+      try {
+        // 1. Save order to Firestore
+        const orderDoc = await db.collection("orders").add({
+          fullName,
+          phone,
+          address,
+          cartItems,
+          subtotal,
+          deliveryFee,
+          grandTotal,
+          status: "Pending", // initial status
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // 2. Initiate Mpesa payment (simulated)
+        const paymentResult = await initiateMpesaPayment(phone, grandTotal);
+
+        if (paymentResult.success) {
+          alert("Mpesa payment request sent. Please complete the payment on your phone.");
+
+          // Listen for real-time order status updates
+          listenToOrderStatus(orderDoc.id);
+
+          // Clear cart data from localStorage
+          localStorage.removeItem("cartId");
+          localStorage.removeItem("subtotal");
+          localStorage.removeItem("deliveryFee");
+          localStorage.removeItem("grandTotal");
+
+          // Change button text
+          btn.innerText = "Payment initiated! Waiting for confirmation...";
+          btn.disabled = true;
+        } else {
+          alert("Payment failed: " + paymentResult.message);
+          btn.disabled = false;
+          btn.innerText = "Place Order & Pay (Mpesa)";
+        }
+      } catch (error)
