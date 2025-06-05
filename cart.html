@@ -72,46 +72,6 @@
       opacity: 0.9;
       z-index: 1000;
     }
-  #loading {
-    display: none;
-    text-align: center;
-    padding: 20px;
-    color: #555;
-  }
-
-  .spinner {
-    animation: rotate 1s linear infinite;
-    width: 50px;
-    height: 50px;
-    margin: auto;
-  }
-
-  .path {
-    stroke: #4caf50;
-    stroke-linecap: round;
-    animation: dash 1.5s ease-in-out infinite;
-  }
-
-  @keyframes rotate {
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
-  @keyframes dash {
-    0% {
-      stroke-dasharray: 1, 150;
-      stroke-dashoffset: 0;
-    }
-    50% {
-      stroke-dasharray: 90, 150;
-      stroke-dashoffset: -35;
-    }
-    100% {
-      stroke-dasharray: 90, 150;
-      stroke-dashoffset: -124;
-    }
-  }
     @media (max-width: 600px) {
       .cart-item {
         flex-direction: column;
@@ -130,18 +90,11 @@
 </head>
 <body>
 
-<div id="loading">
-  <svg class="spinner" viewBox="0 0 50 50">
-    <circle class="path" cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
-  </svg>
-  <p>Loading cart...</p>
-</div>
+<div id="loading">Loading cart...</div>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-  import {
-    getFirestore, doc, getDoc, updateDoc
-  } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+  import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
@@ -204,7 +157,7 @@
         `;
       });
 
-      // Remove
+      // Event Listeners
       document.querySelectorAll(".remove-btn").forEach(button => {
         button.addEventListener("click", async (e) => {
           const idx = e.target.getAttribute("data-index");
@@ -217,7 +170,6 @@
         });
       });
 
-      // Increase
       document.querySelectorAll(".increase").forEach(button => {
         button.addEventListener("click", async (e) => {
           const idx = e.target.getAttribute("data-index");
@@ -228,7 +180,6 @@
         });
       });
 
-      // Decrease
       document.querySelectorAll(".decrease").forEach(button => {
         button.addEventListener("click", async (e) => {
           const idx = e.target.getAttribute("data-index");
@@ -244,7 +195,18 @@
       document.getElementById("item-count").innerText = `${items.length} items`;
     }
 
-    document.getElementById("cart-total").innerText = "Ksh. " + total;
+    // Delivery Fee Calculation
+    const cartTotal = total;
+    let deliveryFee = 15;
+    if (cartTotal > 100) {
+      deliveryFee += Math.floor((cartTotal - 100) / 50) * 5;
+    }
+    const grandTotal = cartTotal + deliveryFee;
+
+    document.getElementById("cart-total").innerText = "Ksh. " + cartTotal;
+    document.getElementById("delivery-fee").innerText = "Ksh. " + deliveryFee;
+    document.getElementById("total-amount").innerText = "Ksh. " + grandTotal;
+
     loading.style.display = "none";
   };
 
@@ -282,7 +244,9 @@
     <div class="cart-wrapper"></div>
 
     <div class="cart-summary">
-      <h3>Total: <span id="cart-total">Ksh. 0</span></h3>
+      <h3>Cart Total: <span id="cart-total">Ksh. 0</span></h3>
+      <p>Delivery Fee: <span id="delivery-fee">Ksh. 0</span></p>
+      <h3>Total With Delivery: <span id="total-amount">Ksh. 0</span></h3>
       <p class="note">Estimated Delivery: 30–45 mins</p>
       <button class="checkout-btn" onclick="window.location.href='checkout.html'">Proceed to Checkout</button>
     </div>
@@ -318,4 +282,4 @@
   });
 </script>
 </body>
-</html>
+  </html>
