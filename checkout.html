@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Checkout - Kibandaski</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,7 +11,7 @@
       background-color: #f9f9f9;
     }
     .summary {
-      max-width: 500px;
+      max-width: 600px;
       margin: auto;
       background: #fff;
       padding: 20px;
@@ -40,6 +40,9 @@
       font-weight: bold;
       color: #555;
     }
+    ul {
+      margin-top: 0;
+    }
   </style>
 </head>
 <body>
@@ -47,18 +50,22 @@
   <div class="summary">
     <div>
       <label for="fullName">Full Name:</label>
-      <input id="fullName" type="text" placeholder="e.g., Jane Doe">
+      <input id="fullName" type="text" placeholder="e.g., Jane Doe" />
     </div>
     <div>
       <label for="phone">Phone Number:</label>
-      <input id="phone" type="text" placeholder="e.g., 07XXXXXXXX">
+      <input id="phone" type="text" placeholder="e.g., 07XXXXXXXX" />
     </div>
     <div>
       <label for="address">Delivery Address:</label>
-      <input id="address" type="text" placeholder="e.g., Hostel A Room 12">
+      <input id="address" type="text" placeholder="e.g., Hostel A Room 12" />
     </div>
+
+    <div id="orderItems"></div>
+
     <div><strong>Delivery Fee:</strong> Ksh <span id="deliveryFee">0</span></div>
     <div><strong>Total Amount:</strong> Ksh <span id="grandTotal">0</span></div>
+
     <button class="btn" onclick="submitOrder()">Place Order</button>
     <div id="statusMessage"></div>
   </div>
@@ -81,12 +88,30 @@
     const db = firebase.firestore();
 
     const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    let cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    let cartTotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     let deliveryFee = 0;
 
-    function calculateDeliveryFee(amount) {
-      if (amount <= 100) return 15;
-      return 15 + Math.floor((amount - 100) / 5);
+    // Show cart items
+    function renderCartItems() {
+      const orderDiv = document.getElementById("orderItems");
+      if (!cart.length) {
+        orderDiv.innerHTML = "<p>No items in cart.</p>";
+        return;
+      }
+
+      let html = "<h3>Order Summary</h3><ul>";
+      cart.forEach(item => {
+        html += `<li>${item.name} x ${item.quantity} — Ksh ${item.price * item.quantity}</li>`;
+      });
+      html += `</ul><p><strong>Subtotal:</strong> Ksh ${cartTotal}</p>`;
+      orderDiv.innerHTML = html;
+    }
+    renderCartItems();
+
+    // New delivery fee logic (no distance)
+    function calculateDeliveryFee() {
+      if (cartTotal <= 100) return 15;
+      return 15 + Math.ceil((cartTotal - 100) / 5);
     }
 
     async function submitOrder() {
@@ -100,10 +125,10 @@
         return;
       }
 
-      deliveryFee = calculateDeliveryFee(cartTotal);
-      document.getElementById("deliveryFee").textContent = deliveryFee;
-
+      // Calculate delivery fee and total
+      deliveryFee = calculateDeliveryFee();
       const grandTotal = cartTotal + deliveryFee;
+      document.getElementById("deliveryFee").textContent = deliveryFee;
       document.getElementById("grandTotal").textContent = grandTotal;
 
       // Save order
@@ -122,7 +147,7 @@
 
       statusDiv.textContent = "Order placed. Waiting for approval...";
 
-      // Watch for order update
+      // Listen for order status
       db.collection("orders").doc(orderRef.id).onSnapshot((doc) => {
         const data = doc.data();
         if (data.status === "Taken") {
@@ -134,6 +159,7 @@
       });
     }
 
+    // Mpesa payment
     function triggerMpesa(phone, amount) {
       fetch("https://tinypesa.com/api/v1/express/initialize", {
         method: "POST",
