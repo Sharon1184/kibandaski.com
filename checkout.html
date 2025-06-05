@@ -1,130 +1,220 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Checkout - Kibandaski Deliveries</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;800&display=swap" rel="stylesheet" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 2rem;
-      background-color: #f6f6f6;
-    }
-    .container {
-      max-width: 500px;
-      margin: auto;
-      background: #fff;
-      padding: 2rem;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-    .price-row {
-      display: flex;
-      justify-content: space-between;
-      margin: 0.5rem 0;
-    }
-    .total {
-      font-weight: bold;
-      font-size: 1.2rem;
-      margin-top: 1rem;
-    }
-    .btn {
-      width: 100%;
-      padding: 1rem;
-      background-color: #28a745;
-      border: none;
-      color: white;
-      font-size: 1rem;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 1.5rem;
-    }
-    .btn:hover {
-      background-color: #218838;
-    }
-    .empty-msg {
-      text-align: center;
-      font-size: 1.1rem;
-      color: #555;
-    }
-    .empty-msg a {
-      color: #007bff;
-      text-decoration: none;
-    }
-    .empty-msg a:hover {
-      text-decoration: underline;
-    }
+    /* Your original styles here */
   </style>
 </head>
 <body>
-  <div class="container" id="checkout-container">
-    <h1>Checkout</h1>
-
-    <div id="details">
-      <div class="price-row"><span>Subtotal:</span><span id="subtotal">-</span></div>
-      <div class="price-row"><span>Delivery Fee:</span><span id="deliveryFee">-</span></div>
-      <div class="price-row total"><span>Total:</span><span id="grandTotal">-</span></div>
-      <button class="btn" id="payBtn">Proceed to Payment</button>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h1 class="logo">DineDash</h1>
+    <div class="sidebar-menus">
+      <a href="index.html"><ion-icon name="storefront-outline"></ion-icon>Home</a>
+      <a href="bills.html"><ion-icon name="receipt-outline"></ion-icon>Bills</a>
+      <a href="#"><ion-icon name="wallet-outline"></ion-icon>Wallet</a>
+      <a href="#"><ion-icon name="notifications-outline"></ion-icon>Notifications</a>
+      <a href="#"><ion-icon name="chatbubbles-outline"></ion-icon>Contact Us</a>
+      <a href="add-food.html"><ion-icon name="shield-checkmark-outline"></ion-icon>Admin</a>
     </div>
-
-    <div class="empty-msg" id="emptyCartMsg" style="display: none;">
-      Your cart is empty. <br>
-      <a href="cart.html">Go back and add some delicious food 🍲</a>
+    <div class="sidebarlogout">
+      <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
     </div>
   </div>
 
-  <script type="module">
-    import { db } from './firebase.js';
-    import { collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  <!-- Main Section -->
+  <div class="main">
+    <div class="main-navbar">
+      <ion-icon class="menu-toggle" name="menu-outline"></ion-icon>
+      <div class="profile">
+        <a class="cart" href="cart.html"><ion-icon name="cart-outline"></ion-icon></a>
+        <a class="user" href="#"><ion-icon name="person-outline"></ion-icon></a>
+      </div>
+    </div>
 
-    const cartId = localStorage.getItem("cartId");
-    const subtotal = localStorage.getItem("subtotal");
-    const deliveryFee = localStorage.getItem("deliveryFee");
-    const grandTotal = localStorage.getItem("grandTotal");
+    <h2 class="main-title">Checkout</h2>
 
-    const details = document.getElementById("details");
-    const emptyCartMsg = document.getElementById("emptyCartMsg");
+    <div class="checkout-summary">
+      <h3>Order Summary</h3>
+      <div class="summary-row"><span>Subtotal:</span><span id="subtotal">Ksh. 0</span></div>
+      <div class="summary-row"><span>Delivery Fee:</span><span id="deliveryFee">Ksh. 0</span></div>
+      <div class="summary-row total"><span>Total:</span><span id="grandTotal">Ksh. 0</span></div>
+      <p class="note">Estimated Delivery: 30–45 mins</p>
+    </div>
 
-    if (!cartId || !subtotal || !deliveryFee || !grandTotal) {
-      // Hide checkout details and show empty message
-      details.style.display = "none";
-      emptyCartMsg.style.display = "block";
-    } else {
-      // Show the cart prices
-      document.getElementById("subtotal").textContent = `Ksh. ${subtotal}`;
-      document.getElementById("deliveryFee").textContent = `Ksh. ${deliveryFee}`;
-      document.getElementById("grandTotal").textContent = `Ksh. ${grandTotal}`;
+    <form id="orderForm">
+      <h3>Delivery Details</h3>
+      <label for="fullName">Full Name</label>
+      <input type="text" id="fullName" name="fullName" required />
+      <label for="phone">Phone Number</label>
+      <input type="tel" id="phone" name="phone" pattern="[0-9]{9,15}" placeholder="e.g. 0712345678" required />
+      <label for="address">Delivery Address</label>
+      <textarea id="address" name="address" required></textarea>
+      <button type="submit" class="place-order-btn">Place Order &amp; Pay (Mpesa)</button>
+    </form>
 
-      // Handle payment
-      document.getElementById("payBtn").addEventListener("click", async () => {
-        try {
-          await addDoc(collection(db, "orders"), {
-            cartId,
-            subtotal: Number(subtotal),
-            deliveryFee: Number(deliveryFee),
-            grandTotal: Number(grandTotal),
-            status: "Pending",
-            createdAt: serverTimestamp(),
-          });
+    <div class="order-status" id="orderStatus" style="display:none; margin-top: 1em; padding: 0.5em; border-left: 5px solid gray;"></div>
+  </div>
 
-          alert("Order placed successfully!");
+  <!-- Ionicons -->
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
-          // Clear cart info and redirect
-          localStorage.removeItem("cartId");
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
+      authDomain: "food-ae7ff.firebaseapp.com",
+      projectId: "food-ae7ff",
+      storageBucket: "food-ae7ff.appspot.com",
+      messagingSenderId: "856889844830",
+      appId: "1:856889844830:web:b2234261c7df8c1e83203e"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Sidebar toggle
+    document.addEventListener("DOMContentLoaded", () => {
+      const menuToggle = document.querySelector(".menu-toggle");
+      const sidebar = document.querySelector(".sidebar");
+
+      menuToggle.addEventListener("click", (e) => {
+        e.stopPropagation();
+        sidebar.classList.toggle("active");
+      });
+
+      document.addEventListener("click", (e) => {
+        if (!sidebar.contains(e.target) && !menuToggle.contains(e.target)) {
+          sidebar.classList.remove("active");
+        }
+      });
+
+      sidebar.addEventListener("click", (e) => {
+        if (e.target.tagName === "A") {
+          sidebar.classList.remove("active");
+        } else {
+          e.stopPropagation();
+        }
+      });
+
+      // Populate order summary from localStorage
+      document.getElementById("subtotal").innerText = `Ksh. ${localStorage.getItem("subtotal") || 0}`;
+      document.getElementById("deliveryFee").innerText = `Ksh. ${localStorage.getItem("deliveryFee") || 0}`;
+      document.getElementById("grandTotal").innerText = `Ksh. ${localStorage.getItem("grandTotal") || 0}`;
+    });
+
+    // Simulate Mpesa STK Push
+    function initiateMpesaPayment(phone, amount) {
+      return new Promise((resolve) => {
+        setTimeout(() => {
+          resolve({ success: true, message: "STK Push sent to phone " + phone });
+        }, 3000);
+      });
+    }
+
+    function listenToOrderStatus(orderId) {
+      const statusDiv = document.getElementById("orderStatus");
+      const orderRef = db.collection("orders").doc(orderId);
+
+      statusDiv.style.display = "block";
+      statusDiv.innerText = "Waiting for order confirmation...";
+
+      orderRef.onSnapshot((doc) => {
+        if (doc.exists) {
+          const status = doc.data().status || "Pending";
+          statusDiv.innerText = `Order Status: ${status}`;
+          if (status === "Delivered") {
+            statusDiv.style.borderLeftColor = "blue";
+          } else if (status === "Cancelled") {
+            statusDiv.style.borderLeftColor = "red";
+          } else {
+            statusDiv.style.borderLeftColor = "gray";
+          }
+        } else {
+          statusDiv.innerText = "Order not found";
+        }
+      });
+    }
+
+    // Handle checkout submission
+    document.getElementById("orderForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const fullName = e.target.fullName.value.trim();
+      const phone = e.target.phone.value.trim();
+      const address = e.target.address.value.trim();
+
+      if (!fullName || !phone || !address) {
+        alert("Please fill in all the required fields.");
+        return;
+      }
+
+      const subtotal = parseFloat(localStorage.getItem("subtotal") || 0);
+      const deliveryFee = parseFloat(localStorage.getItem("deliveryFee") || 0);
+      const grandTotal = parseFloat(localStorage.getItem("grandTotal") || 0);
+      const cartItems = JSON.parse(localStorage.getItem("cartItems") || "[]");
+
+      // Allow payment even if cart is empty
+      if (cartItems.length === 0) {
+        const confirmEmpty = confirm("Your cart is empty. Do you want to proceed with payment?");
+        if (!confirmEmpty) {
+          return; // User cancelled
+        }
+      }
+
+      const btn = e.target.querySelector(".place-order-btn");
+      btn.disabled = true;
+      btn.innerText = "Processing payment...";
+
+      try {
+        const orderDoc = await db.collection("orders").add({
+          fullName,
+          phone,
+          address,
+          cartItems, // empty array if no items
+          subtotal,
+          deliveryFee,
+          grandTotal,
+          status: "Pending",
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        const paymentResult = await initiateMpesaPayment(phone, grandTotal);
+
+        if (paymentResult.success) {
+          alert("Mpesa payment request sent. Please complete the payment on your phone.");
+          listenToOrderStatus(orderDoc.id);
+
+          // Clear localStorage
+          localStorage.removeItem("cartItems");
           localStorage.removeItem("subtotal");
           localStorage.removeItem("deliveryFee");
           localStorage.removeItem("grandTotal");
 
-          window.location.href = "thankyou.html";
-        } catch (error) {
-          console.error("Error placing order:", error);
-          alert("Something went wrong. Please try again.");
+          btn.innerText = "Payment initiated! Waiting for confirmation...";
+        } else {
+          alert("Payment failed: " + paymentResult.message);
+          btn.disabled = false;
+          btn.innerText = "Place Order & Pay (Mpesa)";
         }
-      });
-    }
+      } catch (error) {
+        console.error("Order error:", error);
+        alert("Failed to process your order. Please try again.");
+        btn.disabled = false;
+        btn.innerText = "Place Order & Pay (Mpesa)";
+      }
+    });
   </script>
 </body>
-</html>
+    </html>
