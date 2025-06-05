@@ -1,172 +1,136 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Checkout - Kibandaski</title>
+  <meta charset="UTF-8" />
+  <title>Checkout - Kibandaski Deliveries</title>
+  <link rel="stylesheet" href="style.css" />
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      background-color: #f9f9f9;
-    }
-    .summary {
-      max-width: 500px;
+    .order-box {
+      max-width: 600px;
       margin: auto;
-      background: #fff;
       padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      margin-top: 30px;
     }
-    .summary div {
-      margin-bottom: 15px;
+    .order-box h2 {
+      text-align: center;
     }
-    input {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
+    .order-box p {
+      margin: 10px 0;
     }
-    .btn {
-      background-color: #28a745;
+    .place-order-btn {
+      margin-top: 20px;
+      padding: 10px;
+      background: green;
       color: white;
-      padding: 12px 20px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      font-weight: bold;
-    }
-    #statusMessage {
-      margin-top: 15px;
-      font-weight: bold;
-      color: #555;
+      width: 100%;
     }
   </style>
 </head>
 <body>
-  <h2>Checkout</h2>
-  <div class="summary">
-    <div>
-      <label for="fullName">Full Name:</label>
-      <input id="fullName" type="text" placeholder="e.g., Jane Doe">
-    </div>
-    <div>
-      <label for="phone">Phone Number:</label>
-      <input id="phone" type="text" placeholder="e.g., 07XXXXXXXX">
-    </div>
-    <div>
-      <label for="address">Delivery Address:</label>
-      <input id="address" type="text" placeholder="e.g., Hostel A Room 12">
-    </div>
-    <div><strong>Delivery Fee:</strong> Ksh <span id="deliveryFee">0</span></div>
-    <div><strong>Total Amount:</strong> Ksh <span id="grandTotal">0</span></div>
-    <button class="btn" onclick="submitOrder()">Place Order</button>
-    <div id="statusMessage"></div>
-  </div>
 
-  <!-- Firebase SDK -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+<div class="order-box">
+  <h2>Order Summary</h2>
+  <p id="cart-details">Loading...</p>
+  <button class="place-order-btn" onclick="placeOrder()">Place Order</button>
+</div>
 
-  <script>
-    // ✅ 1. Firebase Config
-    const firebaseConfig = {
-      apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
-      authDomain: "food-ae7ff.firebaseapp.com",
-      projectId: "food-ae7ff",
-      storageBucket: "food-ae7ff.appspot.com",
-      messagingSenderId: "856889844830",
-      appId: "1:856889844830:web:b2234261c7df8c1e83203e"
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+  import {
+    getFirestore, doc, getDoc, addDoc, collection, updateDoc
+  } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
+    authDomain: "food-ae7ff.firebaseapp.com",
+    projectId: "food-ae7ff",
+    storageBucket: "food-ae7ff.appspot.com",
+    messagingSenderId: "1058214228504",
+    appId: "1:1058214228504:web:f1f059be00c9aeaf7cc96d"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const cartId = localStorage.getItem("cartId");
+
+  let cartItems = [];
+  let subtotal = Number(localStorage.getItem("subtotal")) || 0;
+  let deliveryFee = Number(localStorage.getItem("deliveryFee")) || 0;
+  let total = Number(localStorage.getItem("grandTotal")) || 0;
+
+  const displayCart = async () => {
+    const cartRef = doc(db, "carts", cartId);
+    const cartSnap = await getDoc(cartRef);
+    const details = document.getElementById("cart-details");
+
+    if (cartSnap.exists()) {
+      const data = cartSnap.data();
+      cartItems = data.items || [];
+
+      let summary = cartItems.map(item => {
+        return `${item.name} x ${item.quantity || 1} @ Ksh. ${item.price}`;
+      }).join("<br>");
+
+      summary += `<br><br>Subtotal: Ksh. ${subtotal}`;
+      summary += `<br>Delivery Fee: Ksh. ${deliveryFee}`;
+      summary += `<br><strong>Total: Ksh. ${total}</strong>`;
+
+      details.innerHTML = summary;
+    } else {
+      details.innerHTML = "Cart not found.";
+    }
+  };
+
+  window.addEventListener("DOMContentLoaded", displayCart);
+
+  window.placeOrder = async () => {
+    const phone = prompt("Enter your phone number to continue with Mpesa:");
+
+    if (!phone) {
+      alert("Order cancelled.");
+      return;
+    }
+
+    const newOrder = {
+      cartId,
+      phone,
+      items: cartItems,
+      subtotal,
+      deliveryFee,
+      total,
+      status: "Pending",
+      createdAt: new Date()
     };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.firestore();
 
-    // ✅ 2. Get Cart from localStorage
-    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-    const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    try {
+      const orderRef = await addDoc(collection(db, "orders"), newOrder);
+      alert("Order placed. Waiting for rider to accept...");
 
-    // ✅ 3. Delivery fee logic (Fixed version)
-    function calculateDeliveryFee(address) {
-      const words = address.trim().split(/\s+/).length;
-      if (words <= 2) return 15; // assume short location = nearby
-      return 15 + (words - 2) * 1; // +1 bob per word after the first two
+      // Simulate a status update to "Taken"
+      setTimeout(async () => {
+        await updateDoc(orderRef, { status: "Taken" });
+        alert("Order taken by rider. Initiating Mpesa...");
+
+        // Trigger Mpesa prompt
+        initiateMpesa(phone, total);
+      }, 5000);
+    } catch (error) {
+      alert("Failed to place order: " + error.message);
     }
+  };
 
-    async function submitOrder() {
-      const fullName = document.getElementById("fullName").value.trim();
-      const phone = document.getElementById("phone").value.trim();
-      const address = document.getElementById("address").value.trim();
-      const statusDiv = document.getElementById("statusMessage");
+  function initiateMpesa(phone, amount) {
+    // Simulate a prompt for now
+    alert(`Mpesa prompt sent to ${phone} for Ksh. ${amount}`);
+    // Replace this with actual MPESA STK Push call via backend
+  }
+</script>
 
-      if (!fullName || !phone || !address) {
-        alert("Please fill in all fields.");
-        return;
-      }
-
-      const deliveryFee = calculateDeliveryFee(address);
-      const grandTotal = cartTotal + deliveryFee;
-
-      document.getElementById("deliveryFee").textContent = deliveryFee;
-      document.getElementById("grandTotal").textContent = grandTotal;
-
-      statusDiv.textContent = "Placing order...";
-
-      try {
-        // ✅ 4. Save order to Firebase
-        const orderRef = await db.collection("orders").add({
-          fullName,
-          phone,
-          address,
-          items: cart,
-          total: cartTotal,
-          deliveryFee,
-          grandTotal,
-          status: "Pending",
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        statusDiv.textContent = "Order placed. Waiting for approval...";
-
-        // ✅ 5. Listen for order status update
-        db.collection("orders").doc(orderRef.id).onSnapshot((doc) => {
-          const data = doc.data();
-          if (data.status === "Taken") {
-            statusDiv.textContent = "Order accepted. Sending payment prompt...";
-            triggerMpesa(phone, grandTotal);
-          } else if (data.status === "Denied") {
-            statusDiv.textContent = "Sorry, your order was denied.";
-          }
-        });
-
-      } catch (error) {
-        console.error("Error saving order:", error);
-        statusDiv.textContent = "Order failed. Try again.";
-      }
-    }
-
-    // ✅ 6. TinyPesa Payment
-    function triggerMpesa(phone, amount) {
-      fetch("https://tinypesa.com/api/v1/express/initialize", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
-          "ApiKey": "aCkyQr2ZmwpeNRwu9ODULaduvG1ilceZ9TZT-FVe" // your TinyPesa key
-        },
-        body: new URLSearchParams({
-          amount,
-          msisdn: phone,
-          account_no: "Kibandaski"
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        console.log("Mpesa response:", data);
-        document.getElementById("statusMessage").textContent = "Payment prompt sent to your phone!";
-        localStorage.removeItem("cart");
-      })
-      .catch(err => {
-        console.error("Mpesa error:", err);
-        document.getElementById("statusMessage").textContent = "Payment failed. Try again.";
-      });
-    }
-  </script>
 </body>
 </html>
