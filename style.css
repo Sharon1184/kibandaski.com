@@ -302,66 +302,61 @@ body {
     border: none;
 }
 
-.main-detail {
-  margin: 1rem 0 2rem 0;
+..main-detail {
+  margin: 1.5rem 0 2.5rem 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #333;
 }
 
-/* Container: grid with fixed max columns */
+/* Container: 2 columns on desktop, 1 column on tablet/mobile */
 .detail-wrapper {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  max-width: 1200px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  max-width: 1100px;
   margin: 0 auto;
-  padding: 1rem 1.5rem;
+  padding: 1.5rem 2rem;
   box-sizing: border-box;
 }
 
-/* Mobile: vertical list, smaller padding */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
   .detail-wrapper {
-    display: flex;
-    flex-direction: column;
-    padding: 0.75rem 1rem;
-  }
-  .detail-card {
-    width: 100% !important;
+    grid-template-columns: 1fr;
+    padding: 1rem 1.5rem;
   }
 }
 
 /* Card */
 .detail-card {
   background-color: var(--whitecolor, #fff);
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.07);
+  border-radius: 16px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   display: flex;
   flex-direction: column;
   overflow: hidden;
   height: 100%;
-  padding-bottom: 1rem;
-  max-width: 400px; /* limits card size so it won't get too wide */
-  margin: 0 auto;   /* center in grid cell */
+  max-width: 500px;
+  margin: 0 auto;
+  padding-bottom: 1.2rem;
 }
 
 .detail-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.15);
+  transform: translateY(-7px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
 }
 
-/* Image: bigger, cover most card width, taller */
+/* Image */
 .detail-img {
   width: 100%;
-  height: 220px;
+  height: 260px;
   object-fit: cover;
   object-position: center;
-  filter: brightness(0.9);
-  transition: filter 0.3s ease;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
+  filter: brightness(0.88);
+  transition: filter 0.35s ease;
+  border-top-left-radius: 16px;
+  border-top-right-radius: 16px;
 }
 
 .detail-card:hover .detail-img {
@@ -370,17 +365,18 @@ body {
 
 /* Card content */
 .detail-desc {
-  padding: 1rem 1.25rem;
+  padding: 1.3rem 1.8rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   flex-grow: 1;
 }
 
+/* Fluid font sizing with clamp */
 .detail-name h4 {
-  margin: 0 0 0.4rem 0;
-  font-size: 1.15rem;
+  margin: 0 0 0.5rem 0;
   font-weight: 600;
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
   color: var(--textcolor, #222);
   transition: color 0.3s ease;
   white-space: nowrap;
@@ -393,45 +389,32 @@ body {
 }
 
 .detail-sub {
-  font-size: 0.9rem;
-  color: var(--darkgreycolor, #666);
-  margin-bottom: 0.8rem;
-  line-height: 1.3;
-  max-height: 3.9em; /* ~3 lines max */
+  font-size: clamp(0.9rem, 1.5vw, 1rem);
+  color: var(--darkgreycolor, #555);
+  margin-bottom: 1rem;
+  line-height: 1.4;
+  max-height: 4.5em;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .price {
-  font-size: 1.2rem;
+  font-size: clamp(1.2rem, 2vw, 1.4rem);
   color: var(--primarycolor, #007bff);
   font-weight: 700;
   transition: letter-spacing 0.3s ease;
 }
 
 .price:hover {
-  letter-spacing: 1.2px;
+  letter-spacing: 1.3px;
 }
 
 .detail-favourite {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   color: var(--secondarycolor, #f45);
   align-self: flex-end;
   margin-top: auto;
-}
-
-/* Responsive font scaling */
-@media (min-width: 1200px) {
-  .detail-name h4 {
-    font-size: 1.3rem;
-  }
-  .detail-sub {
-    font-size: 1rem;
-  }
-  .price {
-    font-size: 1.3rem;
-  }
-    }
+}kl
 /* Optional: load more button support */
 .load-more {
     display: block;
