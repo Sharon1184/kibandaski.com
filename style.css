@@ -308,7 +308,7 @@ body {
   color: #333;
 }
 
-/* Container: 2 columns on desktop, 1 column on tablet/mobile */
+/* Container: 2 columns on desktop/tablet, 1 column on mobile */
 .detail-wrapper {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -319,9 +319,9 @@ body {
   box-sizing: border-box;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .detail-wrapper {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; /* one card per row */
     padding: 1rem 1.5rem;
   }
 }
@@ -340,6 +340,7 @@ body {
   max-width: 500px;
   margin: 0 auto;
   padding-bottom: 1.2rem;
+  width: 100%; /* make sure it uses full width of grid column */
 }
 
 .detail-card:hover {
@@ -414,8 +415,7 @@ body {
   color: var(--secondarycolor, #f45);
   align-self: flex-end;
   margin-top: auto;
-}kl
-/* Optional: load more button support */
+    }
 .load-more {
     display: block;
     margin: 2rem auto;
