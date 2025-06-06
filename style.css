@@ -302,29 +302,47 @@ body {
 }
 
 .main-detail {
-    margin: 1rem 0 1.5rem 0;
+    margin: 1rem 0 2rem 0;
 }
 
+/* Main grid: responsive on desktop, scrollable on mobile */
 .detail-wrapper {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
     gap: 1.5rem;
-    width: 100%;
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 1rem;
-    border-radius: 8px;
 }
 
+@media (max-width: 768px) {
+    .detail-wrapper {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding: 1rem 0.5rem;
+    }
+
+    .detail-card {
+        min-width: 250px;
+        flex-shrink: 0;
+        scroll-snap-align: start;
+    }
+}
+
+/* Individual card design */
 .detail-card {
     background-color: var(--whitecolor);
     border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     cursor: pointer;
     transition: transform 0.2s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    height: auto;
+    min-height: auto;
+    padding-bottom: 1rem;
 }
 
 .detail-card:hover {
@@ -334,7 +352,7 @@ body {
 
 .detail-img {
     width: 100%;
-    height: 200px;
+    height: 150px;
     object-fit: cover;
     object-position: center;
     filter: brightness(0.85);
@@ -346,6 +364,7 @@ body {
     filter: brightness(1);
 }
 
+/* Card content */
 .detail-desc {
     display: flex;
     flex-direction: column;
@@ -382,41 +401,23 @@ body {
     color: var(--primarycolor);
 }
 
-.food-detail-container {
-    max-width: 700px;
+/* Optional: load more button support */
+.load-more {
+    display: block;
     margin: 2rem auto;
-    background: var(--whitecolor);
-    padding: 2rem;
-    border-radius: 16px;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-    text-align: center;
-}
-
-.food-img {
-    width: 100%;
-    max-height: 300px;
-    object-fit: cover;
-    border-radius: 12px;
-    margin-bottom: 20px;
-}
-
-#food-title {
-    font-size: 2rem;
-    color: var(--primarycolor);
-    margin-bottom: 10px;
-}
-
-#food-desc {
+    background-color: var(--secondarycolor);
+    color: var(--whitecolor);
+    border: none;
+    border-radius: 20px;
+    padding: 0.7rem 2rem;
     font-size: 1rem;
-    color: var(--darkgreycolor);
-    margin-bottom: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
-#food-price {
-    font-size: 1.5rem;
-    color: var(--secondarycolor);
-    margin-bottom: 30px;
-    }
+.load-more:hover {
+    background-color: var(--primarycolor);
+}
 button {
   padding: 12px 20px;
   border: none;
