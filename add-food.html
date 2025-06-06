@@ -23,7 +23,7 @@
       margin: 0;
       display: flex;
     }
-        height: 100vh;
+    height: 100vh;
     width: 250px;
     display: flex;
     flex-direction: column;
@@ -139,8 +139,9 @@
         const description = document.getElementById("description").value.trim();
         const price = parseFloat(document.getElementById("price").value);
         const imageUrl = document.getElementById("imageUrl").value.trim();
+        const restaurant = document.getElementById("restaurant").value;
 
-        if (!name || !description || !price || !imageUrl) {
+        if (!name || !description || !price || !imageUrl || !restaurant) {
           return alert("Please fill in all fields.");
         }
 
@@ -155,7 +156,8 @@
             name,
             description,
             price,
-            imageUrl
+            imageUrl,
+            restaurant
           });
 
           alert("✅ Food item added successfully!");
@@ -192,6 +194,12 @@
       <input type="text" id="description" placeholder="Description" required />
       <input type="number" id="price" placeholder="Price (Ksh)" required />
       <input type="text" id="imageUrl" placeholder="Image URL" required />
+      <select id="restaurant" required>
+        <option value="">Select Restaurant</option>
+        <option value="Main">Main</option>
+        <option value="Mama Achieng">Mama Achieng</option>
+        <option value="Kibandaski Express">Kibandaski Express</option>
+      </select>
       <button type="submit">Add Food</button>
     </form>
   </div>
@@ -200,4 +208,4 @@
   <script src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js" type="module"></script>
   <script src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js" nomodule></script>
 </body>
-</html>
+                                            </html>
