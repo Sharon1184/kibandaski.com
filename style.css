@@ -302,7 +302,7 @@ body {
     border: none;
 }
 
-..main-detail {
+.main-detail {
   margin: 1.5rem 0 2.5rem 0;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #333;
