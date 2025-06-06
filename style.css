@@ -296,107 +296,116 @@ body {
 
 .detail-wrapper {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem;
     width: 100%;
-    margin-top: 1rem;
-    gap: 2%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
     border-radius: 8px;
 }
 
 .detail-card {
-    min-height: 200px;
-    height: 110%;
     background-color: var(--whitecolor);
-    border-radius: 8px;
-    margin: 1% 0;
-    box-shadow: rgba(176, 176, 176, 0.2) 0px 2px 8px 0px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     cursor: pointer;
-    margin-top:15px;
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.detail-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
 .detail-img {
     width: 100%;
     height: 200px;
-    border-radius: 8px;
     object-fit: cover;
     object-position: center;
-    filter: brightness(0.8);
+    filter: brightness(0.85);
+    transition: filter 0.3s ease;
+    border-radius: 0;
+}
+
+.detail-card:hover .detail-img {
+    filter: brightness(1);
 }
 
 .detail-desc {
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
-    align-items: flex-start;
-    padding: 3%;
-    width: 100%;
+    padding: 1rem;
+    flex-grow: 1;
 }
 
 .detail-sub {
-    font-size: 12px;
+    font-size: 0.9rem;
     color: var(--darkgreycolor);
-    letter-spacing: 0.5;
-    margin: 1% 0;
+    margin: 0.3rem 0;
 }
 
 .price {
+    font-size: 1.1rem;
     color: var(--primarycolor);
+    transition: letter-spacing 0.2s ease;
+    font-weight: bold;
+}
+
+.price:hover {
+    letter-spacing: 1px;
 }
 
 .detail-favourite {
-    font-size: 24px;
-}
-
-.detail-card:hover {
-    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
-}
-
-.detail-card:hover .detail-img {
-    filter: opacity(1);
+    font-size: 1.5rem;
+    color: var(--secondarycolor);
+    align-self: flex-end;
+    margin-top: auto;
 }
 
 .detail-card:hover .detail-name h4 {
     color: var(--primarycolor);
 }
 
-.price:hover {
-    letter-spacing: 1.5;
-}
 .food-detail-container {
-  max-width: 600px;
-  margin: 0 auto;
-  background: var(--whitecolor);
-  padding: 20px;
-  border-radius: 16px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  text-align: center;
+    max-width: 700px;
+    margin: 2rem auto;
+    background: var(--whitecolor);
+    padding: 2rem;
+    border-radius: 16px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    text-align: center;
 }
 
 .food-img {
-  width: 100%;
-  max-height: 300px;
-  object-fit: cover;
-  border-radius: 12px;
-  margin-bottom: 20px;
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 20px;
 }
 
 #food-title {
-  font-size: 2rem;
-  color: var(--primarycolor);
-  margin-bottom: 10px;
+    font-size: 2rem;
+    color: var(--primarycolor);
+    margin-bottom: 10px;
 }
 
 #food-desc {
-  font-size: 1rem;
-  color: var(--darkgreycolor);
-  margin-bottom: 20px;
+    font-size: 1rem;
+    color: var(--darkgreycolor);
+    margin-bottom: 20px;
 }
 
 #food-price {
-  font-size: 1.5rem;
-  color: var(--secondarycolor);
-  margin-bottom: 30px;
-}
-
+    font-size: 1.5rem;
+    color: var(--secondarycolor);
+    margin-bottom: 30px;
+    }
 button {
   padding: 12px 20px;
   border: none;
