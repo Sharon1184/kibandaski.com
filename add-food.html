@@ -2,9 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Add and Remove Food</title>
+  <title>Manage Food Items</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" href="style.css" />
   <style>
     :root {
       --primarycolor: #0e6253;
@@ -21,59 +20,7 @@
       background-color: var(--softgreencolor);
       color: var(--blackcolor);
       margin: 0;
-      display: flex;
-    }
-
-    .sidebar {
-      height: 100vh;
-      width: 250px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      position: fixed;
-      top: 0;
-      left: 0;
-      padding: 2%;
-      background-color: var(--primarycolor);
-      color: var(--whitecolor);
-      transition: 0.5s;
-    }
-
-    .sidebar-menus,
-    .sidebarlogout {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .sidebar-menus a,
-    .sidebarlogout a {
-      padding: 5% 8%;
-      margin: 0.5rem 0;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
-      gap: 1rem;
-      text-decoration: none;
-      color: var(--whitecolor);
-      font-size: 1rem;
-    }
-
-    .sidebar-menus ion-icon,
-    .sidebarlogout ion-icon {
-      font-size: 1.25rem;
-    }
-
-    .sidebar-menus a:hover,
-    .sidebarlogout a:hover {
-      background-color: var(--secondarycolor);
-      border-radius: 50px;
-      transition: 0.5s;
-    }
-
-    .main {
-      flex: 1;
       padding: 2rem;
-      margin-left: 250px;
     }
 
     h2 {
@@ -81,18 +28,16 @@
       color: var(--primarycolor);
     }
 
-    form {
+    form, .toggle-section {
       background-color: var(--whitecolor);
       padding: 2rem;
       border-radius: 12px;
-      max-width: 400px;
-      margin: 0 auto;
+      max-width: 600px;
+      margin: 1rem auto;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     }
 
-    input[type="text"],
-    input[type="number"],
-    select {
+    input[type="text"], input[type="number"], select {
       width: 100%;
       padding: 10px;
       margin-bottom: 1rem;
@@ -102,10 +47,9 @@
     }
 
     button {
-      width: 100%;
       background-color: var(--primarycolor);
       color: var(--whitecolor);
-      padding: 10px;
+      padding: 10px 16px;
       border: none;
       border-radius: 8px;
       font-size: 1rem;
@@ -118,67 +62,63 @@
       color: var(--blackcolor);
     }
 
-    #foodList div {
+    .food-item {
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      border-bottom: 1px solid #ccc;
-      padding: 1rem 0;
+      align-items: center;
+      border-bottom: 1px solid var(--darkgreycolor);
+      padding: 0.5rem 0;
     }
 
-    #foodList button {
-      background-color: crimson;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      cursor: pointer;
+    .food-info {
+      flex: 1;
     }
 
-    #foodList button:hover {
-      background-color: darkred;
+    .food-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .search-bar {
+      margin: 1rem 0;
+    }
+
+    .hidden {
+      display: none;
     }
   </style>
 </head>
 <body>
-  <div class="sidebar">
-    <h1 class="logo">DineDash</h1>
-    <div class="sidebar-menus">
-      <a href="home.html"><ion-icon name="storefront-outline"></ion-icon> Home</a>
-      <a href="bills.html"><ion-icon name="receipt-outline"></ion-icon> Bills</a>
-      <a href="wallet.html"><ion-icon name="wallet-outline"></ion-icon> Wallet</a>
-      <a href="notifications.html"><ion-icon name="notifications-outline"></ion-icon> Notifications</a>
-      <a href="contact.html"><ion-icon name="chatbubbles-outline"></ion-icon> Contact Us</a>
-      <a href="settings.html"><ion-icon name="settings-outline"></ion-icon> Settings</a>
-      <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
+  <h2>Add / Manage Foods</h2>
+
+  <form id="foodForm">
+    <input type="text" id="name" placeholder="Food Name" required />
+    <input type="text" id="description" placeholder="Description" required />
+    <input type="number" id="price" placeholder="Price (Ksh)" required />
+    <input type="text" id="imageUrl" placeholder="Image URL" required />
+    <select id="restaurant" required>
+      <option value="">Select Restaurant</option>
+      <option value="Main">Main</option>
+      <option value="Mama Achieng">Mama Achieng</option>
+      <option value="Kibandaski Express">Kibandaski Express</option>
+    </select>
+    <input type="hidden" id="editId" />
+    <button type="submit">Save Food</button>
+  </form>
+
+  <div class="toggle-section">
+    <button id="toggleBtn">View Foods</button>
+    <div id="foodSection" class="hidden">
+      <div class="search-bar">
+        <input type="text" id="search" placeholder="Search foods by name..." />
+      </div>
+      <div class="food-list" id="foodList"></div>
     </div>
-    <div class="sidebarlogout"></div>
-  </div>
-
-  <div class="main">
-    <h2>Add New Food</h2>
-    <form id="foodForm">
-      <input type="text" id="name" placeholder="Food Name" required />
-      <input type="text" id="description" placeholder="Description" required />
-      <input type="number" id="price" placeholder="Price (Ksh)" required />
-      <input type="text" id="imageUrl" placeholder="Image URL" required />
-      <select id="restaurant" required>
-        <option value="">Select Restaurant</option>
-        <option value="Main">Main</option>
-        <option value="Mama Achieng">Mama Achieng</option>
-        <option value="Kibandaski Express">Kibandaski Express</option>
-      </select>
-      <button type="submit">Add Food</button>
-    </form>
-
-    <hr style="margin: 2rem 0;" />
-    <h2>Remove Food Item</h2>
-    <div id="foodList" style="background: var(--whitecolor); padding: 1rem; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 800px; margin: auto;"></div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, onSnapshot, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
@@ -191,100 +131,92 @@
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const foodCol = collection(db, "foods");
 
-    // Add food item
-    document.addEventListener("DOMContentLoaded", () => {
-      const form = document.getElementById("foodForm");
+    const form = document.getElementById("foodForm");
+    const foodList = document.getElementById("foodList");
+    const searchInput = document.getElementById("search");
+    const toggleBtn = document.getElementById("toggleBtn");
+    const foodSection = document.getElementById("foodSection");
 
-      form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const name = document.getElementById("name").value.trim();
-        const description = document.getElementById("description").value.trim();
-        const price = parseFloat(document.getElementById("price").value);
-        const imageUrl = document.getElementById("imageUrl").value.trim();
-        const restaurant = document.getElementById("restaurant").value;
-
-        if (!name || !description || !price || !imageUrl || !restaurant) {
-          return alert("Please fill in all fields.");
-        }
-
-        try {
-          new URL(imageUrl);
-        } catch {
-          return alert("Please enter a valid image URL.");
-        }
-
-        try {
-          await addDoc(collection(db, "foods"), {
-            name,
-            description,
-            price,
-            imageUrl,
-            restaurant
-          });
-
-          alert("✅ Food item added successfully!");
-          form.reset();
-          loadFoods(); // Refresh list
-        } catch (error) {
-          console.error("Error adding food:", error);
-          alert("Failed to add food item.");
-        }
-      });
-
-      loadFoods(); // Load foods on page load
+    // Toggle food list section
+    toggleBtn.addEventListener("click", () => {
+      foodSection.classList.toggle("hidden");
+      toggleBtn.textContent = foodSection.classList.contains("hidden") ? "View Foods" : "Hide Foods";
     });
 
-    // Load and display food items
-    async function loadFoods() {
-      const foodListContainer = document.getElementById("foodList");
-      foodListContainer.innerHTML = "<p>Loading foods...</p>";
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const name = form.name.value.trim();
+      const description = form.description.value.trim();
+      const price = parseFloat(form.price.value);
+      const imageUrl = form.imageUrl.value.trim();
+      const restaurant = form.restaurant.value;
+      const editId = form.editId.value;
 
-      try {
-        const snapshot = await getDocs(collection(db, "foods"));
-        if (snapshot.empty) {
-          foodListContainer.innerHTML = "<p>No food items found.</p>";
-          return;
-        }
+      if (!name || !description || !price || !imageUrl || !restaurant) return alert("Please fill all fields.");
+      try { new URL(imageUrl); } catch { return alert("Invalid image URL."); }
 
-        const foodListHTML = snapshot.docs.map((docSnap) => {
-          const food = docSnap.data();
-          return `
-            <div>
-              <div>
-                <strong>${food.name}</strong><br />
-                <small>${food.description} - Ksh ${food.price}</small><br />
-                <small>Restaurant: ${food.restaurant}</small>
-              </div>
-              <button onclick="deleteFood('${docSnap.id}')">Delete</button>
-            </div>
-          `;
-        }).join("");
-
-        foodListContainer.innerHTML = foodListHTML;
-      } catch (error) {
-        console.error("Failed to fetch foods:", error);
-        foodListContainer.innerHTML = "<p>Error loading food items.</p>";
+      if (editId) {
+        await updateDoc(doc(db, "foods", editId), { name, description, price, imageUrl, restaurant });
+        alert("✅ Food updated.");
+      } else {
+        await addDoc(foodCol, { name, description, price, imageUrl, restaurant });
+        alert("✅ Food added.");
       }
-    }
+      form.reset();
+    });
 
-    // Delete food by ID
-    window.deleteFood = async function (id) {
-      if (!confirm("Are you sure you want to delete this food item?")) return;
+    const renderFoods = (foods) => {
+      foodList.innerHTML = "";
+      foods.forEach(docData => {
+        const data = docData.data();
+        const item = document.createElement("div");
+        item.className = "food-item";
+        item.innerHTML = `
+          <div class="food-info">
+            <strong>${data.name}</strong> - ${data.restaurant}<br />
+            Ksh ${data.price} - ${data.description}
+          </div>
+          <div class="food-actions">
+            <button onclick="editFood('${docData.id}', '${data.name}', '${data.description}', ${data.price}, '${data.imageUrl}', '${data.restaurant}')">Edit</button>
+            <button onclick="deleteFood('${docData.id}')">Delete</button>
+          </div>
+        `;
+        foodList.appendChild(item);
+      });
+    };
 
-      try {
+    window.editFood = (id, name, description, price, imageUrl, restaurant) => {
+      form.name.value = name;
+      form.description.value = description;
+      form.price.value = price;
+      form.imageUrl.value = imageUrl;
+      form.restaurant.value = restaurant;
+      form.editId.value = id;
+    };
+
+    window.deleteFood = async (id) => {
+      if (confirm("Are you sure you want to delete this food item?")) {
         await deleteDoc(doc(db, "foods", id));
-        alert("✅ Food item deleted.");
-        loadFoods();
-      } catch (error) {
-        console.error("Error deleting food:", error);
-        alert("Failed to delete food.");
+        alert("Deleted.");
       }
     };
-  </script>
 
-  <script src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js" type="module"></script>
-  <script src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js" nomodule></script>
+    let foodSnapshot = [];
+
+    const updateDisplay = () => {
+      const term = searchInput.value.toLowerCase();
+      const filtered = foodSnapshot.filter(doc => doc.data().name.toLowerCase().includes(term));
+      renderFoods(filtered);
+    };
+
+    searchInput.addEventListener("input", updateDisplay);
+
+    onSnapshot(foodCol, (snapshot) => {
+      foodSnapshot = snapshot.docs;
+      updateDisplay();
+    });
+  </script>
 </body>
-          </html>
+</html>
