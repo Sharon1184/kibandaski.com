@@ -39,6 +39,7 @@ body {
   background-color: var(--primary-color);
   color: var(--white-color);
   z-index: 2;
+  transition: left 0.3s ease; 
 }
 
 .sidebar-menus,
@@ -476,9 +477,22 @@ button:hover {
   background-color: var(--secondary-color);
 }
 
-/* Hide the sidebar toggle on large screens */
+
+
+/* Hide toggle button on large screens */
 @media screen and (min-width: 768px) {
   .sidebar-toggle {
     display: none;
   }
-    }
+}
+
+
+@media screen and (max-width: 768px) {
+  .sidebar {
+    left: -100%;
+  }
+
+  .sidebar.active {
+    left: 0;
+  }
+}
