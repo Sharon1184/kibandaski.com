@@ -362,6 +362,20 @@ body {
   margin-top: 4px;
   font-style: italic;
 }
+.sold-by {
+  font-size: 13px;
+  color: #444;
+  margin-top: 4px;
+}
+
+.sold-by a {
+  color: #f57c00;
+  text-decoration: none;
+}
+
+.sold-by a:hover {
+  text-decoration: underline;
+}
 /* Media Queries */
 @media screen and (max-width: 644px) {
   .sidebar {
