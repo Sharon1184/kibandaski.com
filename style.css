@@ -302,60 +302,47 @@ body {
   border: none;
 }
 
-.main-detail {
-  margin: 1rem 0 1.5rem 0;
-}
-
-.detail-wrapper {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  width: 100%;
-  margin-top: 1rem;
-  gap: 2%;
-  border-radius: 8px;
-}
-
 .detail-card {
-  min-height: 200px;
-  height: 110%;
   background-color: var(--whitecolor);
   border-radius: 8px;
-  margin: 1% 0;
   box-shadow: rgba(176, 176, 176, 0.2) 0px 2px 8px 0px;
   cursor: pointer;
-  margin-top: 15px;
+  transition: all 0.3s ease;
+  overflow: hidden;
 }
 
 .detail-img {
   width: 100%;
   height: 200px;
-  border-radius: 8px;
+  border-radius: 8px 8px 0 0;
   object-fit: cover;
   object-position: center;
-  filter: brightness(0.8);
+  transition: filter 0.3s ease;
+  filter: brightness(0.85);
 }
 
 .detail-desc {
+  padding: 1rem;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 3%;
-  width: 100%;
+  flex-wrap: wrap;
+}
+
+.detail-name h4 {
+  margin: 0;
+  font-size: 1.1rem;
 }
 
 .detail-sub {
-  font-size: 12px;
+  font-size: 0.875rem;
   color: var(--darkgreycolor);
-  letter-spacing: 0.5;
-  margin: 1% 0;
+  margin: 0.5rem 0;
 }
 
 .price {
   color: var(--primarycolor);
-}
-
-.detail-favourite {
-  font-size: 24px;
+  font-weight: 600;
 }
 
 .detail-card:hover {
@@ -363,17 +350,18 @@ body {
 }
 
 .detail-card:hover .detail-img {
-  filter: opacity(1);
+  filter: brightness(1);
 }
 
 .detail-card:hover .detail-name h4 {
   color: var(--primarycolor);
 }
-
-.price:hover {
-  letter-spacing: 1.5;
+.restaurant-name {
+  font-size: 0.85rem;
+  color: #555;
+  margin-top: 4px;
+  font-style: italic;
 }
-
 /* Media Queries */
 @media screen and (max-width: 644px) {
   .sidebar {
