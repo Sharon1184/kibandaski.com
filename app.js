@@ -50,8 +50,9 @@ async function loadFoods() {
 
     // Make cards clickable to show food details
     card.style.cursor = "pointer";
-    card.addEventListener("click", () => showFoodDetail(food.id));
-
+    card.addEventListener("click", () => {
+  window.location.href = `food-detail.html?id=${encodeURIComponent(food.id)}`;
+});
     menuWrapper.appendChild(card);
   });
 }
