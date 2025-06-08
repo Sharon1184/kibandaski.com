@@ -1,5 +1,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+import {
+  getFirestore,
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
 // Firebase config
 const firebaseConfig = {
@@ -17,59 +21,37 @@ const db = getFirestore(app);
 
 const menuWrapper = document.getElementById("menu-wrapper");
 
-// Fetch and group food items by restaurant
-async function loadFoodsByRestaurant() {
+// Fetch and list all food items with 'Sold by'
+async function loadFoods() {
   const querySnapshot = await getDocs(collection(db, "foods"));
-  const restaurantMap = {};
 
   querySnapshot.forEach((doc) => {
     const food = doc.data();
-    const restaurantName = food.restaurant || "Unknown Restaurant";
+    const restaurant = food.restaurant || "Unknown Vendor";
 
-    if (!restaurantMap[restaurantName]) {
-      restaurantMap[restaurantName] = [];
-    }
-    restaurantMap[restaurantName].push(food);
-  });
-
-  for (const [restaurant, foods] of Object.entries(restaurantMap)) {
-    // Create and append restaurant title
-    const title = document.createElement("h3");
-    title.textContent = restaurant;
-    title.classList.add("restaurant-title"); // You can style this in CSS
-    menuWrapper.appendChild(title);
-
-    // Create a container for the restaurant's foods
-    const restaurantContainer = document.createElement("div");
-    restaurantContainer.classList.add("restaurant-menu");
-
-    // Add food cards
-    foods.forEach((food) => {
-      const card = document.createElement("div");
-      card.classList.add("detail-card");
-      card.innerHTML = `
-        <img class="detail-img" src="${food.imageUrl}" alt="${food.name}">
-        <div class="detail-desc">
-          <div class="detail-name">
-            <h4>${food.name}</h4>
-            <p class="detail-sub">${food.description}</p>
-            <p class="price">Ksh. ${food.price}</p>
-          </div>
-          <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
+    const card = document.createElement("div");
+    card.classList.add("detail-card");
+    card.innerHTML = `
+      <img class="detail-img" src="${food.imageUrl}" alt="${food.name}">
+      <div class="detail-desc">
+        <div class="detail-name">
+          <h4>${food.name}</h4>
+          <p class="detail-sub">${food.description}</p>
+          <p class="price">Ksh. ${food.price}</p>
+          <p class="sold-by">Sold by <a href="restaurant.html?name=${encodeURIComponent(restaurant)}">${restaurant}</a></p>
         </div>
-      `;
-      restaurantContainer.appendChild(card);
-    });
-
-    menuWrapper.appendChild(restaurantContainer);
-  }
+        <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
+      </div>
+    `;
+    menuWrapper.appendChild(card);
+  });
 }
 
-loadFoodsByRestaurant();
+loadFoods();
 
 // Sidebar toggle on mobile
-const mobile = document.querySelector('.menu-toggle');
-const mobileLink = document.querySelector('.sidebar');
+const mobile = document.querySelector(".menu-toggle");
+const mobileLink = document.querySelector(".sidebar");
 
 mobile.addEventListener("click", function () {
   mobile.classList.toggle("is-active");
@@ -93,7 +75,7 @@ const backMenus = document.querySelector(".back-menus");
 const nextMenus = document.querySelector(".next-menus");
 const filterWrapper = document.querySelector(".filter-wrapper");
 
-backMenus.addEventListener("click", function (e) {
+backMenus?.addEventListener("click", function (e) {
   e.preventDefault();
   filterWrapper.scrollBy({
     left: -stepfilter,
@@ -101,7 +83,7 @@ backMenus.addEventListener("click", function (e) {
   });
 });
 
-nextMenus.addEventListener("click", function (e) {
+nextMenus?.addEventListener("click", function (e) {
   e.preventDefault();
   filterWrapper.scrollBy({
     left: stepfilter,
@@ -114,7 +96,7 @@ const backHighlight = document.querySelector(".back");
 const nextHighlight = document.querySelector(".next");
 const highlightWrapper = document.querySelector(".highlight-wrapper");
 
-backHighlight.addEventListener("click", function (e) {
+backHighlight?.addEventListener("click", function (e) {
   e.preventDefault();
   highlightWrapper.scrollBy({
     left: -step,
@@ -122,7 +104,7 @@ backHighlight.addEventListener("click", function (e) {
   });
 });
 
-nextHighlight.addEventListener("click", function (e) {
+nextHighlight?.addEventListener("click", function (e) {
   e.preventDefault();
   highlightWrapper.scrollBy({
     left: step,
