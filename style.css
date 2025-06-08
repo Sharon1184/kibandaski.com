@@ -464,23 +464,4 @@ body {
 button {
     padding: 12px 20px;
     border: none;
-    border-radius: var(--border-radius);
-    font-size: 1rem;
-    cursor: pointer;
-    margin: 10px;
-    transition: opacity 0.3s ease;
-}
-
-.btn-primary {
-    background-color: var(--primary-color);
-    color: var(--white-color);
-}
-
-.btn-secondary {
-    background-color: var(--secondary-color);
-    color: var(--black-color);
-}
-
-button:hover {
-    opacity: 0.9;
-    }
+    border-radius: var(--border-radius
