@@ -10,7 +10,7 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import {
-      getFirestore, collection, getDocs, doc, getDoc, setDoc, updateDoc, arrayUnion
+      getFirestore, collection, getDoc, doc, setDoc, updateDoc, arrayUnion
     } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -25,7 +25,6 @@
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
 
-    // Generate or get a unique cart ID for this browser
     let cartId = localStorage.getItem("cartId");
     if (!cartId) {
       cartId = "cart_" + Math.random().toString(36).substring(2);
@@ -33,29 +32,31 @@
     }
 
     const params = new URLSearchParams(window.location.search);
-    const foodName = params.get("name");
+    const foodId = params.get("id");
     let currentFood = null;
 
-    // Load food details from Firestore
+    // Load food details by ID
     const loadFoodDetail = async () => {
-      const querySnapshot = await getDocs(collection(db, "foods"));
-      let found = false;
-
-      querySnapshot.forEach((doc) => {
-        const food = doc.data();
-        if (food.name === foodName) {
-          found = true;
-          currentFood = food;
-          document.getElementById("food-img").src = food.imageUrl;
-          document.getElementById("food-title").innerText = food.name;
-          document.getElementById("food-desc").innerText = food.description;
-          document.getElementById("food-price").innerText = "Ksh. " + food.price;
-        }
-      });
-
-      if (!found) {
-        document.getElementById("food-title").innerText = "Food Not Found";
+      if (!foodId) {
+        document.getElementById("food-title").innerText = "Food ID not specified.";
+        return;
       }
+
+      const foodRef = doc(db, "foods", foodId);
+      const foodSnap = await getDoc(foodRef);
+
+      if (!foodSnap.exists()) {
+        document.getElementById("food-title").innerText = "Food Not Found";
+        return;
+      }
+
+      const food = foodSnap.data();
+      currentFood = { ...food, id: foodId };
+
+      document.getElementById("food-img").src = food.imageUrl;
+      document.getElementById("food-title").innerText = food.name;
+      document.getElementById("food-desc").innerText = food.description;
+      document.getElementById("food-price").innerText = "Ksh. " + food.price;
     };
 
     // Add item to Firestore cart
@@ -101,7 +102,6 @@
       badge.innerText = count;
     };
 
-    // Event listeners
     window.addEventListener("DOMContentLoaded", () => {
       loadFoodDetail();
       document.getElementById("add-to-cart-btn").addEventListener("click", addToCart);
@@ -167,4 +167,4 @@
     </div>
   </div>
 </body>
-      </html>
+    </html>
