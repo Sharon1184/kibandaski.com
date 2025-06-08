@@ -127,6 +127,170 @@
       padding: 2px 6px;
       border-radius: 50%;
     }
+    /* Reset & Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  display: flex;
+  background-color: #f9f9f9;
+  color: #333;
+}
+
+/* Sidebar Styles */
+.sidebar {
+  width: 240px;
+  background-color: #1e1e2f;
+  color: white;
+  height: 100vh;
+  padding: 20px;
+  position: fixed;
+}
+
+.sidebar .logo {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 30px;
+}
+
+.sidebar-menus a {
+  display: flex;
+  align-items: center;
+  color: white;
+  text-decoration: none;
+  padding: 12px 10px;
+  border-radius: 8px;
+  transition: background 0.3s;
+}
+
+.sidebar-menus a ion-icon {
+  margin-right: 10px;
+  font-size: 20px;
+}
+
+.sidebar-menus a:hover {
+  background-color: #2e2e45;
+}
+
+/* Main Content */
+.main {
+  margin-left: 240px;
+  width: calc(100% - 240px);
+  padding: 20px;
+}
+
+/* Navbar */
+.main-navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.profile a {
+  margin-left: 20px;
+  font-size: 24px;
+  color: #333;
+  text-decoration: none;
+}
+
+/* Food Detail Container */
+.food-detail-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 20px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  text-align: center;
+}
+
+.food-img {
+  width: 100%;
+  max-width: 400px;
+  border-radius: 12px;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+#food-title {
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+#food-desc {
+  font-size: 18px;
+  color: #666;
+  margin-bottom: 20px;
+}
+
+#food-price {
+  font-size: 24px;
+  color: #e67e22;
+  margin-bottom: 30px;
+}
+
+/* Buttons */
+.btn-primary,
+.btn-secondary {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  margin: 10px;
+  transition: 0.3s ease;
+}
+
+.btn-primary {
+  background-color: #27ae60;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #219150;
+}
+
+.btn-secondary {
+  background-color: #2980b9;
+  color: white;
+}
+
+.btn-secondary:hover {
+  background-color: #1c6391;
+}
+
+/* Responsive */
+@media screen and (max-width: 768px) {
+  body {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    position: relative;
+  }
+
+  .main {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .food-detail-container {
+    padding: 10px;
+  }
+
+  .btn-primary, .btn-secondary {
+    width: 100%;
+    margin: 10px 0;
+  }
+    }
   </style>
 </head>
 
