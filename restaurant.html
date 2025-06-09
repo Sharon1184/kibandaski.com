@@ -28,49 +28,75 @@
     const params = new URLSearchParams(window.location.search);
     const restaurantName = params.get("name");
 
+    let allFoods = [];
+
+    const renderFoods = (foods) => {
+      const menuWrapper = document.getElementById("restaurant-menu");
+      menuWrapper.innerHTML = "";
+
+      if (foods.length === 0) {
+        document.getElementById("vendor-title").innerText = `No items found for ${restaurantName}`;
+        return;
+      }
+
+      document.getElementById("vendor-title").innerText = `${restaurantName}'s Menu`;
+
+      foods.forEach(({ docId, food }) => {
+        const card = document.createElement("div");
+        card.classList.add("detail-card");
+
+        card.innerHTML = `
+          <a href="food-details.html?id=${docId}" class="food-link" style="text-decoration:none; color:inherit;">
+            <img class="detail-img" src="${food.imageUrl}" alt="${food.name}">
+            <div class="detail-desc">
+              <div class="detail-name">
+                <h4>${food.name}</h4>
+                <p class="detail-sub">${food.description}</p>
+                <p class="price">Ksh. ${food.price}</p>
+                <p class="sold-by">Sold by ${restaurantName}</p>
+              </div>
+              <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
+            </div>
+          </a>
+        `;
+        menuWrapper.appendChild(card);
+      });
+    };
+
     const loadVendorFoods = async () => {
       const querySnapshot = await getDocs(collection(db, "foods"));
-      const menuWrapper = document.getElementById("restaurant-menu");
-      let found = false;
+      allFoods = [];
 
       querySnapshot.forEach((doc) => {
         const food = doc.data();
         const restaurant = food.restaurant || "Unknown Vendor";
 
         if (restaurant === restaurantName) {
-          found = true;
-          const card = document.createElement("div");
-          card.classList.add("detail-card");
-          card.innerHTML = `
-            <a href="food-details.html?id=${doc.id}" class="food-link" style="text-decoration:none; color:inherit;">
-              <img class="detail-img" src="${food.imageUrl}" alt="${food.name}">
-              <div class="detail-desc">
-                <div class="detail-name">
-                  <h4>${food.name}</h4>
-                  <p class="detail-sub">${food.description}</p>
-                  <p class="price">Ksh. ${food.price}</p>
-                  <p class="sold-by">Sold by ${restaurant}</p>
-                </div>
-                <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
-              </div>
-            </a>
-          `;
-          menuWrapper.appendChild(card);
+          allFoods.push({ docId: doc.id, food });
         }
       });
 
-      document.getElementById("vendor-title").innerText = found
-        ? `${restaurantName}'s Menu`
-        : `No items found for ${restaurantName}`;
+      renderFoods(allFoods);
     };
 
-    window.addEventListener("DOMContentLoaded", loadVendorFoods);
+    const handleSearch = (e) => {
+      const keyword = e.target.value.toLowerCase();
+      const filteredFoods = allFoods.filter(({ food }) =>
+        food.name.toLowerCase().includes(keyword) ||
+        food.description.toLowerCase().includes(keyword)
+      );
+      renderFoods(filteredFoods);
+    };
+
+    window.addEventListener("DOMContentLoaded", () => {
+      loadVendorFoods();
+      document.getElementById("search-input").addEventListener("input", handleSearch);
+    });
   </script>
 
   <!-- Ionicons -->
   <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons.js"></script>
 
-  <!-- Inline Styles for Demo -->
   <style>
     .restaurant-container {
       padding: 2rem;
@@ -80,6 +106,18 @@
       font-size: 2rem;
       font-weight: bold;
       margin-bottom: 1rem;
+    }
+
+    .search-bar {
+      margin-bottom: 1.5rem;
+    }
+
+    #search-input {
+      padding: 10px;
+      width: 100%;
+      max-width: 500px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
     }
 
     .detail-card {
@@ -157,11 +195,14 @@
       </div>
     </div>
 
-    <!-- Restaurant Menu -->
+    <!-- Vendor Menu Content -->
     <div class="restaurant-container">
       <div class="restaurant-title" id="vendor-title">Loading vendor's menu...</div>
+      <div class="search-bar">
+        <input type="text" id="search-input" placeholder="Search food by name or description..." />
+      </div>
       <div id="restaurant-menu"></div>
     </div>
   </div>
 </body>
-</html>
+        </html>
