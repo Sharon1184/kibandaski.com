@@ -1,5 +1,4 @@
-<!-- index.html or main JS page -->
-<script type="module">
+
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
   import {
     getFirestore,
@@ -168,4 +167,4 @@
     e.preventDefault();
     highlightWrapper.scrollBy({ left: step, behavior: "smooth" });
   });
-</script>
+
