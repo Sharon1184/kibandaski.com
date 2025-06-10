@@ -168,3 +168,72 @@ nextHighlight?.addEventListener("click", function (e) {
     behavior: "smooth"
   });
 });
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+  getFirestore, collection, getDocs
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+// ✅ Your Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyD0YpsOvQTL_L53NBodL3STFYTT0vQ4x2s",
+  authDomain: "food-ae7ff.firebaseapp.com",
+  projectId: "food-ae7ff",
+  storageBucket: "food-ae7ff.appspot.com",
+  messagingSenderId: "222990919808",
+  appId: "1:222990919808:web:bf9b71ffb3a2c7e9f65c21"
+};
+
+// ✅ Initialize Firebase and Firestore
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const menuWrapper = document.getElementById("menu-wrapper");
+let foodList = [];
+
+// ✅ Fetch foods from Firebase
+async function fetchFoods() {
+  const querySnapshot = await getDocs(collection(db, "foods"));
+  foodList = [];
+  querySnapshot.forEach((doc) => {
+    const food = doc.data();
+    food.id = doc.id;
+    foodList.push(food);
+  });
+  displayFoods(foodList);
+}
+
+// ✅ Display foods to the menu-wrapper
+function displayFoods(foods) {
+  menuWrapper.innerHTML = "";
+  foods.forEach(food => {
+    const card = document.createElement("div");
+    card.className = "food-card";
+    card.innerHTML = `
+      <img src="${food.imageURL || 'images/default.jpg'}" alt="${food.name}">
+      <h4 class="food-name">${food.name}</h4>
+      <p>Ksh.${food.price}</p>
+    `;
+    menuWrapper.appendChild(card);
+  });
+}
+
+// ✅ Search filter
+document.querySelector(".search-btn").addEventListener("click", () => {
+  const term = document.getElementById("searchInput").value.toLowerCase();
+  const filtered = foodList.filter(food =>
+    food.name.toLowerCase().includes(term)
+  );
+  displayFoods(filtered);
+});
+
+// ✅ Live search (optional)
+document.getElementById("searchInput").addEventListener("input", () => {
+  const term = document.getElementById("searchInput").value.toLowerCase();
+  const filtered = foodList.filter(food =>
+    food.name.toLowerCase().includes(term)
+  );
+  displayFoods(filtered);
+});
+
+// ✅ On load
+fetchFoods();
