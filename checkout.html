@@ -42,7 +42,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
   import {
-    getFirestore, doc, getDoc, addDoc, collection, updateDoc
+    getFirestore, doc, getDoc, addDoc, collection, onSnapshot
   } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -58,11 +58,12 @@
   const db = getFirestore(app);
 
   const cartId = localStorage.getItem("cartId");
-
   let cartItems = [];
   let subtotal = Number(localStorage.getItem("subtotal")) || 0;
   let deliveryFee = Number(localStorage.getItem("deliveryFee")) || 0;
   let total = Number(localStorage.getItem("grandTotal")) || 0;
+  let currentOrderId = null;
+  let customerPhone = null;
 
   const displayCart = async () => {
     const cartRef = doc(db, "carts", cartId);
@@ -90,16 +91,16 @@
   window.addEventListener("DOMContentLoaded", displayCart);
 
   window.placeOrder = async () => {
-    const phone = prompt("Enter your phone number to continue with Mpesa:");
+    customerPhone = prompt("Enter your phone number to continue:");
 
-    if (!phone) {
+    if (!customerPhone) {
       alert("Order cancelled.");
       return;
     }
 
     const newOrder = {
       cartId,
-      phone,
+      phone: customerPhone,
       items: cartItems,
       subtotal,
       deliveryFee,
@@ -110,25 +111,49 @@
 
     try {
       const orderRef = await addDoc(collection(db, "orders"), newOrder);
-      alert("Order placed. Waiting for rider to accept...");
+      currentOrderId = orderRef.id;
+      alert("Order placed! Waiting for a rider to accept...");
 
-      // Simulate a status update to "Taken"
-      setTimeout(async () => {
-        await updateDoc(orderRef, { status: "Taken" });
-        alert("Order taken by rider. Initiating Mpesa...");
-
-        // Trigger Mpesa prompt
-        initiateMpesa(phone, total);
-      }, 5000);
+      listenForOrderStatusChange(orderRef.id);
     } catch (error) {
       alert("Failed to place order: " + error.message);
     }
   };
 
-  function initiateMpesa(phone, amount) {
-    // Simulate a prompt for now
-    alert(`Mpesa prompt sent to ${phone} for Ksh. ${amount}`);
-    // Replace this with actual MPESA STK Push call via backend
+  function listenForOrderStatusChange(orderId) {
+    const orderDocRef = doc(db, "orders", orderId);
+
+    onSnapshot(orderDocRef, async (snapshot) => {
+      const data = snapshot.data();
+      if (data && data.status === "Taken") {
+        alert("Rider has accepted your order! Sending M-Pesa prompt...");
+
+        try {
+          const response = await fetch("https://tinypesa.com/api/v1/express/initialize", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+              "ApiKey": "hP88os4XcngLKHXO345KqMi-WGS2tWG85sVX-qlQ"
+            },
+            body: new URLSearchParams({
+              amount: total,
+              msisdn: customerPhone,
+              account_no: orderId
+            })
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            alert("M-Pesa prompt sent. Check your phone.");
+          } else {
+            alert("Failed to send M-Pesa prompt: " + JSON.stringify(result));
+          }
+        } catch (error) {
+          alert("TinyPesa error: " + error.message);
+        }
+      }
+    });
   }
 </script>
 
