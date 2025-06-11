@@ -51,8 +51,8 @@
       `;
       card.style.cursor = "pointer";
       card.addEventListener("click", () => {
-        showFoodDetail(food.id);
-      });
+  window.location.href = `food-detail.html?id=${food.id}`;
+});
       menuWrapper.appendChild(card);
     });
   }
