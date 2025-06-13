@@ -461,11 +461,10 @@ body {
 }
 
 .restaurant-scroll {
-  display: flex;
-  overflow-x: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   gap: 1rem;
-  padding-bottom: 1rem;
-  scroll-snap-type: x mandatory;
+  padding: 1rem 0;
 }
 
 .restaurant-scroll::-webkit-scrollbar {
