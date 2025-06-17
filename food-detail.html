@@ -1,23 +1,9 @@
-dy>
-    </html>
-<!DOCTYPE html><html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Food Detail</title>
-  <link rel="stylesheet" href="style.css" />
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-    import {
-      getFirestore,
-      collection,
-      getDocs,
-      getDoc,
-      doc,
-      setDoc,
-      updateDoc,
-      arrayUnion
-    } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";const firebaseConfig = {
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
+import {
+  getFirestore, collection, getDoc, getDocs, doc, setDoc, updateDoc, arrayUnion, query, where
+} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+
+const firebaseConfig = {
   apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
   authDomain: "food-ae7ff.firebaseapp.com",
   projectId: "food-ae7ff",
@@ -36,50 +22,66 @@ if (!cartId) {
 }
 
 const params = new URLSearchParams(window.location.search);
-const foodName = params.get("name")?.toLowerCase();
+const foodId = params.get("id");
 let currentFood = null;
-let allFoods = [];
 
-const loadFoods = async () => {
-  const querySnapshot = await getDocs(collection(db, "foods"));
-  allFoods = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-  const matches = allFoods.filter(f => f.name.toLowerCase() === foodName);
-  if (matches.length === 0) {
-    document.getElementById("food-title").innerText = "Food not found.";
+const loadFoodDetail = async () => {
+  if (!foodId) {
+    document.getElementById("food-title").innerText = "Food ID not specified.";
     return;
   }
-  displayMainFood(matches[0]);
-  displayVariants(matches);
-};
 
-const displayMainFood = (food) => {
-  currentFood = food;
+  const foodRef = doc(db, "foods", foodId);
+  const foodSnap = await getDoc(foodRef);
+
+  if (!foodSnap.exists()) {
+    document.getElementById("food-title").innerText = "Food Not Found";
+    return;
+  }
+
+  const food = foodSnap.data();
+  currentFood = { ...food, id: foodId };
+
+  // Set main food display
   document.getElementById("food-img").src = food.imageUrl;
   document.getElementById("food-title").innerText = food.name;
   document.getElementById("food-desc").innerText = food.description;
   document.getElementById("food-price").innerText = "Ksh. " + food.price;
+
+  loadOtherVendors(food.name);
 };
 
-const displayVariants = (foods) => {
+const loadOtherVendors = async (foodName) => {
+  const q = query(collection(db, "foods"), where("name", "==", foodName));
+  const querySnapshot = await getDocs(q);
+
+  const container = document.createElement("div");
+  container.style.marginTop = "30px";
+  container.innerHTML = `<h3>Other restaurants selling ${foodName}:</h3><div id="variants" style="display:flex;gap:10px;overflow-x:auto;padding:10px 0;"></div>`;
+  document.querySelector(".food-detail-container").appendChild(container);
+
   const variantsDiv = document.getElementById("variants");
-  variantsDiv.innerHTML = "";
-  foods.forEach(food => {
-    const div = document.createElement("div");
-    div.style.minWidth = "150px";
-    div.style.marginRight = "10px";
-    div.style.cursor = "pointer";
-    div.innerHTML = `
-      <img src="${food.imageUrl}" style="width:100%; border-radius:8px" />
-      <p style="text-align:center;"><strong>${food.restaurant}</strong><br>Ksh. ${food.price}</p>
+
+  querySnapshot.forEach(docSnap => {
+    const item = docSnap.data();
+    const card = document.createElement("div");
+    card.style.minWidth = "150px";
+    card.style.cursor = "pointer";
+    card.innerHTML = `
+      <img src="${item.imageUrl}" style="width:100%;height:100px;object-fit:cover;border-radius:6px;">
+      <p style="font-weight:bold;">${item.restaurant}</p>
+      <p>Ksh. ${item.price}</p>
     `;
-    div.addEventListener("click", () => displayMainFood(food));
-    variantsDiv.appendChild(div);
+    card.onclick = () => {
+      window.location.href = `food-detail.html?id=${docSnap.id}`;
+    };
+    variantsDiv.appendChild(card);
   });
 };
 
 const addToCart = async () => {
   if (!currentFood) return;
+
   const cartRef = doc(db, "carts", cartId);
   const cartSnap = await getDoc(cartRef);
 
@@ -100,79 +102,26 @@ const addToCart = async () => {
 const updateCartCount = async () => {
   const cartRef = doc(db, "carts", cartId);
   const cartSnap = await getDoc(cartRef);
+
   let count = 0;
   if (cartSnap.exists()) {
     count = cartSnap.data().items?.length || 0;
   }
+
+  const cartIcon = document.querySelector(".cart");
   let badge = document.querySelector(".cart-badge");
+
   if (!badge) {
     badge = document.createElement("sup");
     badge.classList.add("cart-badge");
-    document.querySelector(".cart").appendChild(badge);
+    cartIcon.appendChild(badge);
   }
+
   badge.innerText = count;
 };
 
 window.addEventListener("DOMContentLoaded", () => {
-  loadFoods();
+  loadFoodDetail();
   document.getElementById("add-to-cart-btn").addEventListener("click", addToCart);
   updateCartCount();
 });
-
-  </script>
-  <style>
-    .food-detail-container {
-      max-width: 800px;
-      margin: auto;
-      padding: 20px;
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-      text-align: center;
-    }
-    .food-img {
-      width: 100%;
-      max-width: 400px;
-      border-radius: 12px;
-      object-fit: cover;
-      margin-bottom: 20px;
-    }
-    #variants {
-      display: flex;
-      overflow-x: auto;
-      padding-top: 20px;
-    }
-    .btn-primary, .btn-secondary {
-      padding: 12px 24px;
-      border: none;
-      border-radius: 10px;
-      font-size: 16px;
-      cursor: pointer;
-      margin: 10px;
-      transition: 0.3s ease;
-    }
-    .btn-primary {
-      background-color: #27ae60;
-      color: white;
-    }
-    .btn-secondary {
-      background-color: #2980b9;
-      color: white;
-    }
-  </style>
-</head>
-<body>
-  <div class="food-detail-container">
-    <img id="food-img" class="food-img" />
-    <h1 id="food-title"></h1>
-    <p id="food-desc"></p>
-    <h3 id="food-price"></h3>
-    <button id="add-to-cart-btn" class="btn-primary">Add to Cart</button>
-    <button onclick="window.location.href='checkout.html'" class="btn-secondary">Proceed to Checkout</button>
-    <div>
-      <h3>Other restaurants offering this</h3>
-      <div id="variants"></div>
-    </div>
-  </div>
-</body>
-</html>
