@@ -1,4 +1,3 @@
-      
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,104 +5,112 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Food Detail</title>
   <link rel="stylesheet" href="style.css" />
-
   <style>
-    .main {
-      margin-left: 240px;
+    body {
+      font-family: sans-serif;
+      margin: 0;
       padding: 20px;
+      background: #f5f5f5;
     }
 
-    .food-detail-container {
-      max-width: 800px;
+    .container {
+      max-width: 900px;
       margin: auto;
+    }
+
+    /* Main Food */
+    .main-food {
       background: white;
       padding: 20px;
       border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .main-food {
-      text-align: center;
-      margin-bottom: 40px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
     }
 
     .main-food img {
       width: 100%;
-      max-width: 400px;
-      border-radius: 10px;
+      max-height: 300px;
       object-fit: cover;
-      margin-bottom: 20px;
+      border-radius: 10px;
     }
 
     .main-food h1 {
-      font-size: 30px;
+      margin-top: 20px;
+      font-size: 28px;
     }
 
-    .main-food p {
+    .main-food .desc {
       margin: 10px 0;
-      font-size: 16px;
+      color: #555;
     }
 
     .main-food .price {
-      color: #e67e22;
       font-weight: bold;
+      color: #e67e22;
       font-size: 20px;
     }
 
+    .main-food .buttons {
+      margin-top: 20px;
+    }
+
     .btn {
-      padding: 10px 20px;
-      border-radius: 8px;
+      padding: 10px 16px;
       border: none;
+      border-radius: 6px;
       cursor: pointer;
-      margin: 10px;
+      margin-right: 10px;
     }
 
     .btn-primary {
-      background: #27ae60;
+      background-color: #27ae60;
       color: white;
     }
 
     .btn-secondary {
-      background: #3498db;
+      background-color: #3498db;
       color: white;
     }
 
+    /* Other Vendors */
     .other-vendors {
-      margin-top: 30px;
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
     .other-vendors h2 {
       margin-bottom: 10px;
-      font-size: 22px;
     }
 
-    .vendor-list {
+    .vendors-list {
       display: flex;
       gap: 15px;
       overflow-x: auto;
-      padding: 10px 0;
+      padding-bottom: 10px;
     }
 
     .vendor-card {
-      min-width: 160px;
-      background: #f5f5f5;
-      padding: 10px;
+      min-width: 180px;
+      background: #fafafa;
       border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
       cursor: pointer;
-      flex-shrink: 0;
+      text-align: center;
     }
 
     .vendor-card img {
       width: 100%;
-      height: 100px;
+      height: 120px;
       object-fit: cover;
       border-radius: 8px;
     }
 
     .vendor-card p {
-      margin: 5px 0;
+      margin: 6px 0;
       font-size: 14px;
-      text-align: center;
     }
 
     .vendor-card .price {
@@ -114,31 +121,30 @@
 </head>
 
 <body>
-  <div class="main">
-    <div class="food-detail-container">
-      <!-- Main Food Display -->
-      <div class="main-food">
-        <img id="food-img" src="" alt="Food Image" />
-        <h1 id="food-title"></h1>
-        <p id="food-desc"></p>
-        <p class="price" id="food-price"></p>
+  <div class="container">
+    <!-- Main Food -->
+    <div class="main-food">
+      <img id="food-img" src="" alt="Food Image" />
+      <h1 id="food-title"></h1>
+      <p class="desc" id="food-desc"></p>
+      <p class="price" id="food-price"></p>
+      <div class="buttons">
         <button id="add-to-cart-btn" class="btn btn-primary">Add to Cart</button>
-        <button onclick="window.location.href='checkout.html'" class="btn btn-secondary">Checkout</button>
+        <button onclick="location.href='checkout.html'" class="btn btn-secondary">Checkout</button>
       </div>
+    </div>
 
-      <!-- Other Vendors Section -->
-      <div class="other-vendors">
-        <h2>Other restaurants selling this item:</h2>
-        <div class="vendor-list" id="variants"></div>
-      </div>
+    <!-- Other Restaurants -->
+    <div class="other-vendors">
+      <h2>Other restaurants selling this food:</h2>
+      <div class="vendors-list" id="vendors-list"></div>
     </div>
   </div>
 
-  <!-- Firebase Scripts -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import {
-      getFirestore, collection, getDoc, getDocs, doc, setDoc, updateDoc, arrayUnion, query, where
+      getFirestore, doc, getDoc, collection, getDocs, query, where, setDoc, updateDoc, arrayUnion
     } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
     const firebaseConfig = {
@@ -164,12 +170,13 @@
     let currentFood = null;
 
     const loadFoodDetail = async () => {
-      if (!foodId) return;
-
       const foodRef = doc(db, "foods", foodId);
       const foodSnap = await getDoc(foodRef);
 
-      if (!foodSnap.exists()) return;
+      if (!foodSnap.exists()) {
+        document.getElementById("food-title").innerText = "Food not found";
+        return;
+      }
 
       const food = foodSnap.data();
       currentFood = { ...food, id: foodId };
@@ -186,30 +193,32 @@
       const q = query(collection(db, "foods"), where("name", "==", foodName));
       const querySnapshot = await getDocs(q);
 
-      const variantsDiv = document.getElementById("variants");
-      variantsDiv.innerHTML = "";
+      const list = document.getElementById("vendors-list");
+      list.innerHTML = "";
 
       querySnapshot.forEach(docSnap => {
-        if (docSnap.id === foodId) return; // Skip current item
+        if (docSnap.id === foodId) return; // skip main food
 
-        const item = docSnap.data();
+        const food = docSnap.data();
         const card = document.createElement("div");
-        card.className = "vendor-card";
+        card.classList.add("vendor-card");
+
         card.innerHTML = `
-          <img src="${item.imageUrl}" alt="${item.restaurant}" />
-          <p><strong>${item.restaurant}</strong></p>
-          <p class="price">Ksh. ${item.price}</p>
+          <img src="${food.imageUrl}" alt="Food image" />
+          <p><strong>${food.restaurant}</strong></p>
+          <p class="price">Ksh. ${food.price}</p>
         `;
-        card.onclick = () => {
-          window.location.href = `food-detail.html?id=${docSnap.id}`;
-        };
-        variantsDiv.appendChild(card);
+
+        card.addEventListener("click", () => {
+          location.href = `food-detail.html?id=${docSnap.id}`;
+        });
+
+        list.appendChild(card);
       });
     };
 
     const addToCart = async () => {
       if (!currentFood) return;
-
       const cartRef = doc(db, "carts", cartId);
       const cartSnap = await getDoc(cartRef);
 
@@ -224,30 +233,11 @@
       }
 
       alert("✅ Added to cart!");
-      updateCartCount();
     };
 
-    const updateCartCount = async () => {
-      const cartRef = doc(db, "carts", cartId);
-      const cartSnap = await getDoc(cartRef);
-      const count = cartSnap.exists() ? (cartSnap.data().items?.length || 0) : 0;
-
-      const cartIcon = document.querySelector(".cart");
-      let badge = document.querySelector(".cart-badge");
-
-      if (!badge) {
-        badge = document.createElement("sup");
-        badge.classList.add("cart-badge");
-        cartIcon?.appendChild(badge);
-      }
-
-      if (badge) badge.innerText = count;
-    };
-
-    window.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", () => {
       loadFoodDetail();
       document.getElementById("add-to-cart-btn").addEventListener("click", addToCart);
-      updateCartCount();
     });
   </script>
 </body>
