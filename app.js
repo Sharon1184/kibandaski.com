@@ -64,50 +64,11 @@ function displayGroupedFoods(foods) {
       </div>
     `;
     card.style.cursor = "pointer";
-    card.addEventListener("click", () => showGroupedFoodDetail(food.name.toLowerCase()));
-    menuWrapper.appendChild(card);
-  });
-}
-
-// ✅ Section for showing versions of the same food
-let detailSection = document.getElementById("food-detail");
-if (!detailSection) {
-  detailSection = document.createElement("div");
-  detailSection.id = "food-detail";
-  detailSection.style.marginTop = "30px";
-  document.body.appendChild(detailSection);
-}
-
-function showGroupedFoodDetail(foodName) {
-  const matches = allFoods.filter(f => f.name.toLowerCase() === foodName);
-  if (matches.length === 0) return;
-
-  const first = matches[0];
-
-  detailSection.innerHTML = `
-    <h2>${first.name}</h2>
-    <p><strong>${matches.length}</strong> restaurants selling:</p>
-    <div id="recommendation-list" style="display:flex; gap:10px; overflow-x:auto;"></div>
-  `;
-
-  const recommendationListDiv = document.getElementById("recommendation-list");
-  recommendationListDiv.innerHTML = "";
-
-  matches.forEach(food => {
-    const recCard = document.createElement("div");
-    recCard.style.minWidth = "150px";
-    recCard.style.cursor = "pointer";
-    recCard.innerHTML = `
-      <img src="${food.imageUrl}" alt="${food.name}" style="width:100%; border-radius:5px;">
-      <p style="text-align:center;"><strong>${food.restaurant}</strong><br>Ksh. ${food.price}</p>
-    `;
-    recCard.addEventListener("click", () => {
+    card.addEventListener("click", () => {
       window.location.href = `food-detail.html?id=${food.id}`;
     });
-    recommendationListDiv.appendChild(recCard);
+    menuWrapper.appendChild(card);
   });
-
-  detailSection.scrollIntoView({ behavior: "smooth" });
 }
 
 // ✅ Search
