@@ -1,334 +1,178 @@
-<!DOCTYPE html>
-<html lang="en">
+dy>
+    </html>
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Food Detail</title>
   <link rel="stylesheet" href="style.css" />
-
-  <!-- Firebase & Cart Script -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import {
-      getFirestore, collection, getDoc, doc, setDoc, updateDoc, arrayUnion
-    } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+      getFirestore,
+      collection,
+      getDocs,
+      getDoc,
+      doc,
+      setDoc,
+      updateDoc,
+      arrayUnion
+    } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";const firebaseConfig = {
+  apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
+  authDomain: "food-ae7ff.firebaseapp.com",
+  projectId: "food-ae7ff",
+  storageBucket: "food-ae7ff.appspot.com",
+  messagingSenderId: "1058214228504",
+  appId: "1:1058214228504:web:f1f059be00c9aeaf7cc96d"
+};
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
-      authDomain: "food-ae7ff.firebaseapp.com",
-      projectId: "food-ae7ff",
-      storageBucket: "food-ae7ff.appspot.com",
-      messagingSenderId: "1058214228504",
-      appId: "1:1058214228504:web:f1f059be00c9aeaf7cc96d"
-    };
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
+let cartId = localStorage.getItem("cartId");
+if (!cartId) {
+  cartId = "cart_" + Math.random().toString(36).substring(2);
+  localStorage.setItem("cartId", cartId);
+}
 
-    let cartId = localStorage.getItem("cartId");
-    if (!cartId) {
-      cartId = "cart_" + Math.random().toString(36).substring(2);
-      localStorage.setItem("cartId", cartId);
-    }
+const params = new URLSearchParams(window.location.search);
+const foodName = params.get("name")?.toLowerCase();
+let currentFood = null;
+let allFoods = [];
 
-    const params = new URLSearchParams(window.location.search);
-    const foodId = params.get("id");
-    let currentFood = null;
+const loadFoods = async () => {
+  const querySnapshot = await getDocs(collection(db, "foods"));
+  allFoods = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-    // Load food details by ID
-    const loadFoodDetail = async () => {
-      if (!foodId) {
-        document.getElementById("food-title").innerText = "Food ID not specified.";
-        return;
-      }
+  const matches = allFoods.filter(f => f.name.toLowerCase() === foodName);
+  if (matches.length === 0) {
+    document.getElementById("food-title").innerText = "Food not found.";
+    return;
+  }
+  displayMainFood(matches[0]);
+  displayVariants(matches);
+};
 
-      const foodRef = doc(db, "foods", foodId);
-      const foodSnap = await getDoc(foodRef);
+const displayMainFood = (food) => {
+  currentFood = food;
+  document.getElementById("food-img").src = food.imageUrl;
+  document.getElementById("food-title").innerText = food.name;
+  document.getElementById("food-desc").innerText = food.description;
+  document.getElementById("food-price").innerText = "Ksh. " + food.price;
+};
 
-      if (!foodSnap.exists()) {
-        document.getElementById("food-title").innerText = "Food Not Found";
-        return;
-      }
+const displayVariants = (foods) => {
+  const variantsDiv = document.getElementById("variants");
+  variantsDiv.innerHTML = "";
+  foods.forEach(food => {
+    const div = document.createElement("div");
+    div.style.minWidth = "150px";
+    div.style.marginRight = "10px";
+    div.style.cursor = "pointer";
+    div.innerHTML = `
+      <img src="${food.imageUrl}" style="width:100%; border-radius:8px" />
+      <p style="text-align:center;"><strong>${food.restaurant}</strong><br>Ksh. ${food.price}</p>
+    `;
+    div.addEventListener("click", () => displayMainFood(food));
+    variantsDiv.appendChild(div);
+  });
+};
 
-      const food = foodSnap.data();
-      currentFood = { ...food, id: foodId };
+const addToCart = async () => {
+  if (!currentFood) return;
+  const cartRef = doc(db, "carts", cartId);
+  const cartSnap = await getDoc(cartRef);
 
-      document.getElementById("food-img").src = food.imageUrl;
-      document.getElementById("food-title").innerText = food.name;
-      document.getElementById("food-desc").innerText = food.description;
-      document.getElementById("food-price").innerText = "Ksh. " + food.price;
-    };
-
-    // Add item to Firestore cart
-    const addToCart = async () => {
-      if (!currentFood) return;
-
-      const cartRef = doc(db, "carts", cartId);
-      const cartSnap = await getDoc(cartRef);
-
-      if (cartSnap.exists()) {
-        await updateDoc(cartRef, {
-          items: arrayUnion(currentFood)
-        });
-      } else {
-        await setDoc(cartRef, {
-          items: [currentFood]
-        });
-      }
-
-      alert("✅ Added to cart!");
-      updateCartCount();
-    };
-
-    // Update the cart icon badge with item count
-    const updateCartCount = async () => {
-      const cartRef = doc(db, "carts", cartId);
-      const cartSnap = await getDoc(cartRef);
-
-      let count = 0;
-      if (cartSnap.exists()) {
-        count = cartSnap.data().items?.length || 0;
-      }
-
-      const cartIcon = document.querySelector(".cart");
-      let badge = document.querySelector(".cart-badge");
-
-      if (!badge) {
-        badge = document.createElement("sup");
-        badge.classList.add("cart-badge");
-        cartIcon.appendChild(badge);
-      }
-
-      badge.innerText = count;
-    };
-
-    window.addEventListener("DOMContentLoaded", () => {
-      loadFoodDetail();
-      document.getElementById("add-to-cart-btn").addEventListener("click", addToCart);
-      updateCartCount();
+  if (cartSnap.exists()) {
+    await updateDoc(cartRef, {
+      items: arrayUnion(currentFood)
     });
+  } else {
+    await setDoc(cartRef, {
+      items: [currentFood]
+    });
+  }
+
+  alert("✅ Added to cart!");
+  updateCartCount();
+};
+
+const updateCartCount = async () => {
+  const cartRef = doc(db, "carts", cartId);
+  const cartSnap = await getDoc(cartRef);
+  let count = 0;
+  if (cartSnap.exists()) {
+    count = cartSnap.data().items?.length || 0;
+  }
+  let badge = document.querySelector(".cart-badge");
+  if (!badge) {
+    badge = document.createElement("sup");
+    badge.classList.add("cart-badge");
+    document.querySelector(".cart").appendChild(badge);
+  }
+  badge.innerText = count;
+};
+
+window.addEventListener("DOMContentLoaded", () => {
+  loadFoods();
+  document.getElementById("add-to-cart-btn").addEventListener("click", addToCart);
+  updateCartCount();
+});
+
   </script>
-
-  <!-- Ionicons -->
-  <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons.js"></script>
-
-  <!-- Inline badge style -->
   <style>
-    .cart {
-      position: relative;
+    .food-detail-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      text-align: center;
     }
-    .cart-badge {
-      position: absolute;
-      top: -5px;
-      right: -10px;
-      background-color: red;
+    .food-img {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 12px;
+      object-fit: cover;
+      margin-bottom: 20px;
+    }
+    #variants {
+      display: flex;
+      overflow-x: auto;
+      padding-top: 20px;
+    }
+    .btn-primary, .btn-secondary {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px;
+      transition: 0.3s ease;
+    }
+    .btn-primary {
+      background-color: #27ae60;
       color: white;
-      font-size: 12px;
-      padding: 2px 6px;
-      border-radius: 50%;
     }
-    /* Reset & Base Styles */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-body {
-  display: flex;
-  background-color: #f9f9f9;
-  color: #333;
-}
-
-/* Sidebar Styles */
-.sidebar {
-  width: 240px;
-  background-color: #1e1e2f;
-  color: white;
-  height: 100vh;
-  padding: 20px;
-  position: fixed;
-}
-
-.sidebar .logo {
-  font-size: 28px;
-  font-weight: bold;
-  margin-bottom: 30px;
-}
-
-.sidebar-menus a {
-  display: flex;
-  align-items: center;
-  color: white;
-  text-decoration: none;
-  padding: 12px 10px;
-  border-radius: 8px;
-  transition: background 0.3s;
-}
-
-.sidebar-menus a ion-icon {
-  margin-right: 10px;
-  font-size: 20px;
-}
-
-.sidebar-menus a:hover {
-  background-color: #2e2e45;
-}
-
-/* Main Content */
-.main {
-  margin-left: 240px;
-  width: calc(100% - 240px);
-  padding: 20px;
-}
-
-/* Navbar */
-.main-navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.profile a {
-  margin-left: 20px;
-  font-size: 24px;
-  color: #333;
-  text-decoration: none;
-}
-
-/* Food Detail Container */
-.food-detail-container {
-  max-width: 800px;
-  margin: auto;
-  padding: 20px;
-  background: white;
-  border-radius: 16px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  text-align: center;
-}
-
-.food-img {
-  width: 100%;
-  max-width: 400px;
-  border-radius: 12px;
-  object-fit: cover;
-  margin-bottom: 20px;
-}
-
-#food-title {
-  font-size: 32px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-
-#food-desc {
-  font-size: 18px;
-  color: #666;
-  margin-bottom: 20px;
-}
-
-#food-price {
-  font-size: 24px;
-  color: #e67e22;
-  margin-bottom: 30px;
-}
-
-/* Buttons */
-.btn-primary,
-.btn-secondary {
-  padding: 12px 24px;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  margin: 10px;
-  transition: 0.3s ease;
-}
-
-.btn-primary {
-  background-color: #27ae60;
-  color: white;
-}
-
-.btn-primary:hover {
-  background-color: #219150;
-}
-
-.btn-secondary {
-  background-color: #2980b9;
-  color: white;
-}
-
-.btn-secondary:hover {
-  background-color: #1c6391;
-}
-
-/* Responsive */
-@media screen and (max-width: 768px) {
-  body {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    height: auto;
-    position: relative;
-  }
-
-  .main {
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .food-detail-container {
-    padding: 10px;
-  }
-
-  .btn-primary, .btn-secondary {
-    width: 100%;
-    margin: 10px 0;
-  }
+    .btn-secondary {
+      background-color: #2980b9;
+      color: white;
     }
   </style>
 </head>
-
 <body>
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <h1 class="logo">DineDash</h1>
-    <div class="sidebar-menus">
-      <a href="index.html"><ion-icon name="storefront-outline"></ion-icon>Home</a>
-      <a href="bills.html"><ion-icon name="receipt-outline"></ion-icon>Bills</a>
-      <a href="#"><ion-icon name="wallet-outline"></ion-icon>Wallet</a>
-      <a href="#"><ion-icon name="notifications-outline"></ion-icon>Notifications</a>
-      <a href="#"><ion-icon name="chatbubbles-outline"></ion-icon>Contact Us</a>
-      <a href="add-food.html"><ion-icon name="shield-checkmark-outline"></ion-icon>Admin</a>
-      <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
-    </div>
-  </div>
-
-  <!-- Main Section -->
-  <div class="main">
-    <!-- Navbar -->
-    <div class="main-navbar">
-      <ion-icon class="menu-toggle" name="menu-outline"></ion-icon>
-      <div class="profile">
-        <a class="cart" href="cart.html"><ion-icon name="cart-outline"></ion-icon></a>
-        <a class="user" href="auth.html"><ion-icon name="person-outline"></ion-icon></a>
-      </div>
-    </div>
-
-    <!-- Food Detail Display -->
-    <div class="food-detail-container">
-      <img id="food-img" alt="Food Image" class="food-img" />
-      <h1 id="food-title"></h1>
-      <p id="food-desc"></p>
-      <h3 id="food-price"></h3>
-      <button id="add-to-cart-btn" class="btn-primary">Add to Cart</button>
-      <button onclick="window.location.href='checkout.html'" class="btn-secondary">Proceed to Checkout</button>
+  <div class="food-detail-container">
+    <img id="food-img" class="food-img" />
+    <h1 id="food-title"></h1>
+    <p id="food-desc"></p>
+    <h3 id="food-price"></h3>
+    <button id="add-to-cart-btn" class="btn-primary">Add to Cart</button>
+    <button onclick="window.location.href='checkout.html'" class="btn-secondary">Proceed to Checkout</button>
+    <div>
+      <h3>Other restaurants offering this</h3>
+      <div id="variants"></div>
     </div>
   </div>
 </body>
-    </html>
+</html>
