@@ -1,127 +1,92 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
-import {
-  getFirestore, collection, getDoc, getDocs, doc, setDoc, updateDoc, arrayUnion, query, where
-} from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Food Detail</title>
+  <link rel="stylesheet" href="style.css" />
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
-  authDomain: "food-ae7ff.firebaseapp.com",
-  projectId: "food-ae7ff",
-  storageBucket: "food-ae7ff.appspot.com",
-  messagingSenderId: "1058214228504",
-  appId: "1:1058214228504:web:f1f059be00c9aeaf7cc96d"
-};
+  <!-- Firebase logic (as module) -->
+  <script type="module" src="food-detail.js"></script>
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+  <!-- Ionicons -->
+  <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons.js"></script>
 
-let cartId = localStorage.getItem("cartId");
-if (!cartId) {
-  cartId = "cart_" + Math.random().toString(36).substring(2);
-  localStorage.setItem("cartId", cartId);
-}
+  <!-- Inline minimal style for badge -->
+  <style>
+    .cart {
+      position: relative;
+    }
+    .cart-badge {
+      position: absolute;
+      top: -5px;
+      right: -10px;
+      background-color: red;
+      color: white;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 50%;
+    }
 
-const params = new URLSearchParams(window.location.search);
-const foodId = params.get("id");
-let currentFood = null;
+    .food-detail-container {
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+      text-align: center;
+    }
 
-const loadFoodDetail = async () => {
-  if (!foodId) {
-    document.getElementById("food-title").innerText = "Food ID not specified.";
-    return;
-  }
+    .food-img {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 12px;
+      object-fit: cover;
+      margin-bottom: 20px;
+    }
 
-  const foodRef = doc(db, "foods", foodId);
-  const foodSnap = await getDoc(foodRef);
+    .btn-primary,
+    .btn-secondary {
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 10px;
+      transition: 0.3s ease;
+    }
 
-  if (!foodSnap.exists()) {
-    document.getElementById("food-title").innerText = "Food Not Found";
-    return;
-  }
+    .btn-primary {
+      background-color: #27ae60;
+      color: white;
+    }
 
-  const food = foodSnap.data();
-  currentFood = { ...food, id: foodId };
+    .btn-secondary {
+      background-color: #2980b9;
+      color: white;
+    }
+  </style>
+</head>
+<body style="background-color: #f5f5f5; font-family: sans-serif;">
+  <!-- Top Navigation -->
+  <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 20px; background: #fff;">
+    <h2 style="margin: 0;">🍽️ DineDash</h2>
+    <div class="profile">
+      <a class="cart" href="cart.html"><ion-icon name="cart-outline" style="font-size: 24px;"></ion-icon></a>
+      <a class="user" href="auth.html" style="margin-left: 20px;"><ion-icon name="person-outline" style="font-size: 24px;"></ion-icon></a>
+    </div>
+  </div>
 
-  // Set main food display
-  document.getElementById("food-img").src = food.imageUrl;
-  document.getElementById("food-title").innerText = food.name;
-  document.getElementById("food-desc").innerText = food.description;
-  document.getElementById("food-price").innerText = "Ksh. " + food.price;
-
-  loadOtherVendors(food.name);
-};
-
-const loadOtherVendors = async (foodName) => {
-  const q = query(collection(db, "foods"), where("name", "==", foodName));
-  const querySnapshot = await getDocs(q);
-
-  const container = document.createElement("div");
-  container.style.marginTop = "30px";
-  container.innerHTML = `<h3>Other restaurants selling ${foodName}:</h3><div id="variants" style="display:flex;gap:10px;overflow-x:auto;padding:10px 0;"></div>`;
-  document.querySelector(".food-detail-container").appendChild(container);
-
-  const variantsDiv = document.getElementById("variants");
-
-  querySnapshot.forEach(docSnap => {
-    const item = docSnap.data();
-    const card = document.createElement("div");
-    card.style.minWidth = "150px";
-    card.style.cursor = "pointer";
-    card.innerHTML = `
-      <img src="${item.imageUrl}" style="width:100%;height:100px;object-fit:cover;border-radius:6px;">
-      <p style="font-weight:bold;">${item.restaurant}</p>
-      <p>Ksh. ${item.price}</p>
-    `;
-    card.onclick = () => {
-      window.location.href = `food-detail.html?id=${docSnap.id}`;
-    };
-    variantsDiv.appendChild(card);
-  });
-};
-
-const addToCart = async () => {
-  if (!currentFood) return;
-
-  const cartRef = doc(db, "carts", cartId);
-  const cartSnap = await getDoc(cartRef);
-
-  if (cartSnap.exists()) {
-    await updateDoc(cartRef, {
-      items: arrayUnion(currentFood)
-    });
-  } else {
-    await setDoc(cartRef, {
-      items: [currentFood]
-    });
-  }
-
-  alert("✅ Added to cart!");
-  updateCartCount();
-};
-
-const updateCartCount = async () => {
-  const cartRef = doc(db, "carts", cartId);
-  const cartSnap = await getDoc(cartRef);
-
-  let count = 0;
-  if (cartSnap.exists()) {
-    count = cartSnap.data().items?.length || 0;
-  }
-
-  const cartIcon = document.querySelector(".cart");
-  let badge = document.querySelector(".cart-badge");
-
-  if (!badge) {
-    badge = document.createElement("sup");
-    badge.classList.add("cart-badge");
-    cartIcon.appendChild(badge);
-  }
-
-  badge.innerText = count;
-};
-
-window.addEventListener("DOMContentLoaded", () => {
-  loadFoodDetail();
-  document.getElementById("add-to-cart-btn").addEventListener("click", addToCart);
-  updateCartCount();
-});
+  <!-- Food Detail Section -->
+  <div class="food-detail-container">
+    <img id="food-img" alt="Food Image" class="food-img" />
+    <h1 id="food-title"></h1>
+    <p id="food-desc"></p>
+    <h3 id="food-price"></h3>
+    <button id="add-to-cart-btn" class="btn-primary">Add to Cart</button>
+    <button onclick="window.location.href='checkout.html'" class="btn-secondary">Proceed to Checkout</button>
+    <!-- Other restaurants will be appended below here -->
+  </div>
+</body>
+                                                                                                                             </html>
