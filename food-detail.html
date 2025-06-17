@@ -51,6 +51,7 @@
       const food = foodSnap.data();
       currentFood = { ...food, id: foodId };
 
+      // Set main display
       document.getElementById("food-img").src = food.imageUrl || "images/placeholder.jpg";
       document.getElementById("food-img").onerror = () => {
         document.getElementById("food-img").src = "images/placeholder.jpg";
@@ -66,34 +67,27 @@
       const q = query(collection(db, "foods"), where("name", "==", foodName));
       const querySnapshot = await getDocs(q);
 
-      const container = document.createElement("div");
-      container.style.marginTop = "30px";
-      container.innerHTML = `<h3>Other restaurants selling ${foodName}:</h3><div id="variants" style="display:flex;gap:10px;overflow-x:auto;padding:10px 0;"></div>`;
-      document.querySelector(".food-detail-container").appendChild(container);
-
-      const variantsDiv = document.getElementById("variants");
+      const variantsDiv = document.getElementById("other-vendors");
+      variantsDiv.innerHTML = `<h3 style="margin-top:30px;">Other restaurants selling ${foodName}:</h3><div class="variant-cards"></div>`;
+      const cardsContainer = variantsDiv.querySelector(".variant-cards");
 
       querySnapshot.forEach(docSnap => {
         const item = docSnap.data();
+        if (docSnap.id === foodId) return; // Skip the current food
+
         const card = document.createElement("div");
-        card.style.minWidth = "150px";
-        card.style.cursor = "pointer";
-        card.style.padding = "10px";
-        card.style.border = "1px solid #ccc";
-        card.style.borderRadius = "8px";
-        card.style.background = "#f9f9f9";
-
+        card.className = "variant-card";
         card.innerHTML = `
-          <img src="${item.imageUrl}" style="width:100%;height:100px;object-fit:cover;border-radius:6px;">
-          <p style="font-weight:bold;margin:5px 0;">${item.restaurant}</p>
-          <p style="color:#27ae60;">Ksh. ${item.price}</p>
+          <img src="${item.imageUrl}" alt="${item.name}">
+          <div class="variant-info">
+            <strong>${item.restaurant}</strong>
+            <p>Ksh. ${item.price}</p>
+          </div>
         `;
-
         card.onclick = () => {
           window.location.href = `food-detail.html?id=${docSnap.id}`;
         };
-
-        variantsDiv.appendChild(card);
+        cardsContainer.appendChild(card);
       });
     };
 
@@ -206,17 +200,9 @@
       color: white;
     }
 
-    .btn-primary:hover {
-      background-color: #1e874b;
-    }
-
     .btn-secondary {
       background-color: #2980b9;
       color: white;
-    }
-
-    .btn-secondary:hover {
-      background-color: #1f6391;
     }
 
     .cart {
@@ -237,6 +223,42 @@
       top: -8px;
       right: -8px;
     }
+
+    #other-vendors {
+      margin-top: 40px;
+    }
+
+    .variant-cards {
+      display: flex;
+      gap: 15px;
+      overflow-x: auto;
+      padding: 10px 0;
+    }
+
+    .variant-card {
+      min-width: 160px;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      padding: 10px;
+      background: #fff;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .variant-card:hover {
+      transform: scale(1.03);
+    }
+
+    .variant-card img {
+      width: 100%;
+      height: 100px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .variant-info {
+      padding-top: 5px;
+    }
   </style>
 </head>
 <body>
@@ -247,10 +269,11 @@
     <h3 id="food-price"></h3>
     <button id="add-to-cart-btn" class="btn-primary">Add to Cart</button>
     <button onclick="window.location.href='checkout.html'" class="btn-secondary">Proceed to Checkout</button>
+
+    <!-- Other Restaurants Section -->
+    <div id="other-vendors"></div>
   </div>
 
-  <a href="cart.html" class="cart">
-    🛒
-  </a>
+  <a href="cart.html" class="cart">🛒</a>
 </body>
 </html>
