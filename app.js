@@ -5,7 +5,7 @@ import {
   getDocs
 } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-firestore.js";
 
-// ✅ Firebase config
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAHhmbgDA_D13LcnEWgtr5Unu7uihBpGPE",
   authDomain: "food-ae7ff.firebaseapp.com",
@@ -19,32 +19,37 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 const menuWrapper = document.getElementById("menu-wrapper");
+const highlightSlider = document.getElementById("highlightSlider");
 let allFoods = [];
 
-// ✅ Load all foods and group them
+// Load all foods
 async function loadFoods() {
   const querySnapshot = await getDocs(collection(db, "foods"));
   allFoods = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
   displayGroupedFoods(allFoods);
+  displayRecommendations(allFoods);
+  startAutoRotation(); // Optional: rotate recommendations every 10s
 }
 
-// ✅ Display only one food per name
+// Display Choose Order section
 function displayGroupedFoods(foods) {
   const grouped = {};
 
-  // Group all versions of the same food
   foods.forEach(food => {
     const name = food.name.toLowerCase();
-    if (!grouped[name]) {
-      grouped[name] = [];
-    }
+    if (!grouped[name]) grouped[name] = [];
     grouped[name].push(food);
   });
 
-  // Randomly pick one version per food group
-  const uniqueFoods = Object.values(grouped).map(group =>
+  let uniqueFoods = Object.values(grouped).map(group =>
     group[Math.floor(Math.random() * group.length)]
   );
+
+  // Shuffle foods (Fisher-Yates)
+  for (let i = uniqueFoods.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [uniqueFoods[i], uniqueFoods[j]] = [uniqueFoods[j], uniqueFoods[i]];
+  }
 
   menuWrapper.innerHTML = "";
   uniqueFoods.forEach(food => {
@@ -71,13 +76,62 @@ function displayGroupedFoods(foods) {
   });
 }
 
-// ✅ Search
+// Display Recommendations section
+function displayRecommendations(foods) {
+  const grouped = {};
+
+  foods.forEach(food => {
+    const name = food.name.toLowerCase();
+    if (!grouped[name]) grouped[name] = [];
+    grouped[name].push(food);
+  });
+
+  const uniqueFoods = Object.values(grouped).map(group =>
+    group[Math.floor(Math.random() * group.length)]
+  );
+
+  // Shuffle
+  for (let i = uniqueFoods.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [uniqueFoods[i], uniqueFoods[j]] = [uniqueFoods[j], uniqueFoods[i]];
+  }
+
+  const selected = uniqueFoods.slice(0, 4);
+
+  highlightSlider.innerHTML = "";
+  selected.forEach(food => {
+    const card = document.createElement("div");
+    card.classList.add("highlight-card");
+    card.innerHTML = `
+      <img class="highlight-img" src="${food.imageUrl}" alt="${food.name}">
+      <div class="highlight-desc">
+        <h4>${food.name}</h4>
+        <p>Ksh.${food.price}</p>
+      </div>
+    `;
+    card.style.cursor = "pointer";
+    card.addEventListener("click", () => {
+      window.location.href = `food-detail.html?id=${food.id}`;
+    });
+    highlightSlider.appendChild(card);
+  });
+}
+
+// Auto-refresh Recommendations every 10 seconds
+function startAutoRotation() {
+  setInterval(() => {
+    displayRecommendations(allFoods);
+  }, 10000);
+}
+
+// Search
 document.querySelector(".search-btn")?.addEventListener("click", () => {
   const term = document.getElementById("searchInput").value.toLowerCase();
   const filtered = allFoods.filter(food =>
     food.name.toLowerCase().includes(term)
   );
   displayGroupedFoods(filtered);
+  displayRecommendations(filtered);
 });
 
 document.getElementById("searchInput")?.addEventListener("input", () => {
@@ -86,21 +140,22 @@ document.getElementById("searchInput")?.addEventListener("input", () => {
     food.name.toLowerCase().includes(term)
   );
   displayGroupedFoods(filtered);
+  displayRecommendations(filtered);
 });
 
-// ✅ Load on page
+// Load foods on page load
 loadFoods();
 
-// ✅ Mobile menu toggle
+// Mobile menu toggle
 const mobile = document.querySelector(".menu-toggle");
 const mobileLink = document.querySelector(".sidebar");
 
-mobile?.addEventListener("click", function () {
+mobile?.addEventListener("click", () => {
   mobile.classList.toggle("is-active");
   mobileLink.classList.toggle("active");
 });
 
-mobileLink?.addEventListener("click", function () {
+mobileLink?.addEventListener("click", () => {
   const menuBars = document.querySelector(".is-active");
   if (window.innerWidth <= 768 && menuBars) {
     mobile.classList.toggle("is-active");
@@ -108,7 +163,7 @@ mobileLink?.addEventListener("click", function () {
   }
 });
 
-// ✅ Scroll controls
+// Scroll controls
 const step = 100;
 const stepfilter = 60;
 
