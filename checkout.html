@@ -132,6 +132,7 @@
         details.innerHTML = table;
       } else {
         details.innerHTML = "Cart not found.";
+        console.error("❌ Cart document not found with ID:", cartId);
       }
     };
 
@@ -140,12 +141,16 @@
     window.placeOrder = async () => {
       const name = document.getElementById("customerName").value.trim();
       const phone = document.getElementById("customerPhone").value.trim();
+      const button = document.querySelector(".place-order-btn");
 
       const phoneRegex = /^(07\d{8}|01\d{8})$/;
       if (!name || !phoneRegex.test(phone)) {
         alert("Please enter a valid name and Kenyan phone number (07... or 01...).");
         return;
       }
+
+      button.disabled = true;
+      button.textContent = "Placing order...";
 
       const newOrder = {
         cartId,
@@ -159,17 +164,16 @@
         createdAt: new Date()
       };
 
-      const button = document.querySelector(".place-order-btn");
-      button.disabled = true;
-      button.textContent = "Placing order...";
-
       try {
+        console.log("📝 Adding order to Firestore...");
         const orderRef = await addDoc(collection(db, "orders"), newOrder);
         currentOrderId = orderRef.id;
+        console.log("✅ Order placed with ID:", currentOrderId);
+
         alert("Order placed! Initiating M-Pesa payment...");
 
-        // ✅ Trigger STK push immediately
         const formattedPhone = phone.replace(/^0/, "254");
+        console.log("📞 Sending STK push to:", formattedPhone);
 
         const response = await fetch("https://tinypesa.com/api/v1/express/initialize", {
           method: "POST",
@@ -185,14 +189,16 @@
         });
 
         const result = await response.json();
+        console.log("🧾 TinyPesa response:", result);
 
         if (result.success) {
-          alert("M-Pesa prompt sent. Check your phone.");
+          alert("✅ M-Pesa prompt sent. Check your phone.");
         } else {
-          alert("Failed to send M-Pesa prompt: " + JSON.stringify(result));
+          alert("❌ Failed to send M-Pesa prompt: " + JSON.stringify(result));
         }
 
       } catch (error) {
+        console.error("🔥 Error placing order or sending payment:", error);
         alert("Failed to place order or initiate payment: " + error.message);
         button.disabled = false;
         button.textContent = "Place Order";
