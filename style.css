@@ -91,47 +91,8 @@ body {
 }
 
 /* Adjust for mobile */
-@media screen and (max-width: 768px) {
-  .sidebar {
-    transform: translateX(-100%);
-  }
 
-  .sidebar.active {
-    transform: translateX(0);
-    position: fixed;
-  }
 
-  .main {
-    margin-left: 0;
-  }
-
-  .menu-toggle {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  .main-navbar {
-    padding-top: 60px;
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .search {
-    width: 80%;
-    max-width: 400px;
-    margin: 0 auto;
-  }
-
-  .search-btn {
-    width: 80px;
-  }
-
-  .profile {
-    justify-content: center;
-    gap: 1rem;
-  }
-}
 
 /* The rest of your original styles remain below */
 
