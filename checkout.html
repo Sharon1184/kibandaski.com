@@ -101,7 +101,6 @@
     let subtotal = Number(localStorage.getItem("subtotal")) || 0;
     let deliveryFee = Number(localStorage.getItem("deliveryFee")) || 0;
     let total = Number(localStorage.getItem("grandTotal")) || 0;
-    let currentOrderId = null;
 
     const displayCart = async () => {
       const cartRef = doc(db, "carts", cartId);
@@ -132,7 +131,6 @@
         details.innerHTML = table;
       } else {
         details.innerHTML = "Cart not found.";
-        alert("❌ Cart not found. cartId = " + cartId);
       }
     };
 
@@ -141,16 +139,12 @@
     window.placeOrder = async () => {
       const name = document.getElementById("customerName").value.trim();
       const phone = document.getElementById("customerPhone").value.trim();
-      const button = document.querySelector(".place-order-btn");
 
       const phoneRegex = /^(07\d{8}|01\d{8})$/;
       if (!name || !phoneRegex.test(phone)) {
         alert("Please enter a valid name and Kenyan phone number (07... or 01...).");
         return;
       }
-
-      button.disabled = true;
-      button.textContent = "Placing order...";
 
       const newOrder = {
         cartId,
@@ -164,45 +158,43 @@
         createdAt: new Date()
       };
 
+      const button = document.querySelector(".place-order-btn");
+      button.disabled = true;
+      button.textContent = "Placing order...";
+
       try {
-        alert("📝 1. Trying to add order to Firestore...");
-
         const orderRef = await addDoc(collection(db, "orders"), newOrder);
-        currentOrderId = orderRef.id;
+        const orderId = orderRef.id;
 
-        alert("✅ 2. Order placed. ID: " + currentOrderId);
+        alert("Order placed! Sending M-Pesa prompt...");
 
-        const formattedPhone = phone.replace(/^0/, "254");
-        alert("📞 3. Sending STK push to: " + formattedPhone);
-
-        const response = await fetch("https://tinypesa.com/api/v1/express/initialize", {
+        // ✅ Call your Replit backend to send STK push
+        const response = await fetch("https://05e00347-8b1b-4078-ac05-67a4c562fcb1-00-1m2970kgnw38l.riker.replit.dev/sendStk", {
           method: "POST",
           headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-            "ApiKey": "hP88os4XcngLKHXO345KqMi-WGS2tWG85sVX-qlQ"
+            "Content-Type": "application/json"
           },
-          body: new URLSearchParams({
+          body: JSON.stringify({
             amount: total,
-            msisdn: formattedPhone,
-            account_no: currentOrderId
+            phone: phone,
+            account_no: orderId
           })
         });
-
-        alert("📦 4. Response received from TinyPesa");
 
         const result = await response.json();
 
         if (result.success) {
-          alert("✅ 5. M-Pesa prompt sent successfully.");
+          alert("M-Pesa prompt sent. Check your phone.");
         } else {
-          alert("❌ 5. M-Pesa error: " + JSON.stringify(result));
+          alert("Failed to send M-Pesa prompt: " + JSON.stringify(result));
         }
 
       } catch (error) {
-        alert("🔥 FAILED AT: " + error.message);
-        button.disabled = false;
-        button.textContent = "Place Order";
+        alert("Error placing order or sending payment: " + error.message);
       }
+
+      button.disabled = false;
+      button.textContent = "Place Order";
     };
   </script>
 </body>
