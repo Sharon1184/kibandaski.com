@@ -1,5 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
   <title>Checkout - Kibandaski Deliveries</title>
@@ -61,24 +60,22 @@
       cursor: not-allowed;
     }
   </style>
+  <script src="https://js.paystack.co/v1/inline.js"></script>
 </head>
 <body>
   <div class="order-box">
-    <h2>Checkout</h2>
+    <h2>Checkout</h2><label for="customerName">Your Name</label>
+<input type="text" id="customerName" placeholder="Enter your name" required />
 
-    <label for="customerName">Your Name</label>
-    <input type="text" id="customerName" placeholder="Enter your name" required />
+<label for="customerPhone">Phone Number</label>
+<input type="tel" id="customerPhone" placeholder="e.g. 0712345678 or 0112345678" required />
 
-    <label for="customerPhone">Phone Number</label>
-    <input type="tel" id="customerPhone" placeholder="e.g. 0712345678 or 0112345678" required />
+<h3>Order Summary</h3>
+<div id="cart-details">Loading cart...</div>
 
-    <h3>Order Summary</h3>
-    <div id="cart-details">Loading cart...</div>
+<button class="place-order-btn" onclick="placeOrder()">Place Order</button>
 
-    <button class="place-order-btn" onclick="placeOrder()">Place Order</button>
-  </div>
-
-  <script type="module">
+  </div>  <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.8.1/firebase-app.js";
     import {
       getFirestore, doc, getDoc, addDoc, collection
@@ -166,28 +163,38 @@
         const orderRef = await addDoc(collection(db, "orders"), newOrder);
         const orderId = orderRef.id;
 
-        alert("Order placed! Sending M-Pesa prompt...");
-
-        // ✅ Call your Replit backend to send STK push
-        const response = await fetch("https://05e00347-8b1b-4078-ac05-67a4c562fcb1-00-1m2970kgnw38l.riker.replit.dev/sendStk", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
+        const handler = PaystackPop.setup({
+          key: "pk_test_408f6320e3d0e019bd42d9544cc10b8a1f9e3937",
+          email: `${phone}@kibandaski.com`,
+          amount: total * 100,
+          currency: "KES",
+          ref: orderId,
+          metadata: {
+            custom_fields: [
+              {
+                display_name: name,
+                variable_name: "customer_name",
+                value: name
+              }
+            ]
           },
-          body: JSON.stringify({
-            amount: total,
-            phone: phone,
-            account_no: orderId
-          })
+          callback: async function(response) {
+            alert("Payment complete! Verifying...");
+
+            try {
+              const verify = await fetch(`https://us-central1-food-ae7ff.cloudfunctions.net/verifyPayment?reference=${response.reference}`);
+              const resText = await verify.text();
+              alert(resText);
+            } catch (err) {
+              alert("Verification failed: " + err.message);
+            }
+          },
+          onClose: function() {
+            alert("Transaction cancelled.");
+          }
         });
 
-        const result = await response.json();
-
-        if (result.success) {
-          alert("M-Pesa prompt sent. Check your phone.");
-        } else {
-          alert("Failed to send M-Pesa prompt: " + JSON.stringify(result));
-        }
+        handler.openIframe();
 
       } catch (error) {
         alert("Error placing order or sending payment: " + error.message);
@@ -196,6 +203,5 @@
       button.disabled = false;
       button.textContent = "Place Order";
     };
-  </script>
-</body>
-</html>
+  </script></body>
+  </html>
