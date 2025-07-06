@@ -322,7 +322,6 @@ body {
   background-color: var(--primarycolor);
   border: none;
 }
-
 .detail-wrapper {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -343,6 +342,7 @@ body {
   flex-direction: column;
   transition: 0.3s;
   background-size: cover;
+  overflow: hidden;
 }
 
 .detail-img {
@@ -352,6 +352,7 @@ body {
   object-fit: cover;
   object-position: center;
   filter: brightness(0.8);
+  transition: 0.3s ease;
 }
 
 .detail-desc {
@@ -364,6 +365,16 @@ body {
   min-height: 100px;
 }
 
+.detail-name h4 {
+  font-size: 15px;
+  font-weight: bold;
+  margin: 0;
+  color: var(--blackcolor);
+  line-height: 1.3;
+  max-height: 38px;
+  overflow: hidden;
+}
+
 .detail-sub {
   font-size: 12px;
   color: var(--darkgreycolor);
@@ -374,6 +385,7 @@ body {
 .price {
   color: var(--primarycolor);
   font-weight: bold;
+  font-size: 16px;
   transition: 0.3s;
 }
 
@@ -388,8 +400,14 @@ body {
 }
 
 .detail-favourite {
-  font-size: 24px;
+  font-size: 20px;
   align-self: flex-end;
+  color: var(--darkgreycolor);
+  transition: 0.2s;
+}
+
+.detail-favourite:hover {
+  color: var(--primarycolor);
 }
 
 .detail-card:hover {
@@ -397,16 +415,11 @@ body {
 }
 
 .detail-card:hover .detail-img {
-  filter: opacity(1);
+  filter: brightness(1);
 }
 
 .detail-card:hover .detail-name h4 {
   color: var(--primarycolor);
-}
-
-:focus {
-  outline: 2px dashed var(--secondarycolor);
-  outline-offset: 2px;
 }
 
 /* Mobile Responsive */
