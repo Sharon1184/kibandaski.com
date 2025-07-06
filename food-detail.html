@@ -6,98 +6,124 @@
   <title>Food Detail</title>
   <link rel="stylesheet" href="style.css" />
   <style>
+    :root {
+      --primary: #e67e22;
+      --secondary: #27ae60;
+      --blue: #3498db;
+      --bg: #f5f5f5;
+      --card: #ffffff;
+      --shadow: rgba(0, 0, 0, 0.08);
+    }
+
     body {
       font-family: Arial, sans-serif;
-      background: #f5f5f5;
+      background: var(--bg);
       margin: 0;
       padding: 20px;
     }
 
     .container {
-      max-width: 900px;
+      max-width: 960px;
       margin: auto;
     }
 
-    /* Main Food Section */
     .main-food {
-      background: #fff;
+      background: var(--card);
       border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 3px 12px var(--shadow);
       padding: 20px;
       margin-bottom: 40px;
     }
 
     .main-food img {
       width: 100%;
-      max-height: 300px;
+      max-height: 320px;
       object-fit: cover;
-      border-radius: 8px;
+      border-radius: 10px;
+      transition: 0.3s ease;
     }
 
     .main-food h1 {
       margin-top: 20px;
       font-size: 26px;
+      color: #333;
     }
 
-    .main-food .desc {
+    .desc {
       color: #555;
-      margin: 10px 0;
+      font-size: 15px;
+      margin: 10px 0 5px;
     }
 
-    .main-food .price {
+    .price {
       font-size: 20px;
       font-weight: bold;
-      color: #e67e22;
+      color: var(--primary);
+      margin-bottom: 15px;
     }
 
     .buttons {
-      margin-top: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
     .btn {
-      padding: 10px 16px;
+      padding: 10px 18px;
       border: none;
       border-radius: 5px;
       cursor: pointer;
-      font-size: 14px;
-      margin-right: 10px;
+      font-size: 15px;
+      transition: background 0.3s ease;
     }
 
     .btn-primary {
-      background-color: #27ae60;
+      background-color: var(--secondary);
       color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #219150;
     }
 
     .btn-secondary {
-      background-color: #3498db;
+      background-color: var(--blue);
       color: white;
     }
 
-    /* Other Vendors Section */
+    .btn-secondary:hover {
+      background-color: #2c80c9;
+    }
+
     .other-vendors {
-      background: #fff;
+      background: var(--card);
       padding: 20px;
       border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      box-shadow: 0 3px 12px var(--shadow);
     }
 
     .other-vendors h2 {
       margin-bottom: 20px;
+      color: #333;
+      font-size: 20px;
     }
 
     .vendor-card {
       display: flex;
       gap: 15px;
       background: #fafafa;
-      border-radius: 8px;
-      padding: 10px;
+      border-radius: 10px;
+      padding: 12px;
       margin-bottom: 15px;
+      align-items: center;
+      box-shadow: 0 2px 6px var(--shadow);
       cursor: pointer;
-      transition: background 0.2s ease;
+      transition: 0.2s ease;
     }
 
     .vendor-card:hover {
       background: #f0f0f0;
+      transform: translateY(-2px);
     }
 
     .vendor-card img {
@@ -108,9 +134,7 @@
     }
 
     .vendor-info {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
+      flex-grow: 1;
     }
 
     .vendor-info p {
@@ -118,8 +142,20 @@
     }
 
     .vendor-info .price {
-      color: #e67e22;
+      color: var(--primary);
       font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      .vendor-card {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .vendor-card img {
+        width: 100%;
+        height: 180px;
+      }
     }
   </style>
 </head>
@@ -128,7 +164,7 @@
     <!-- Main Food Section -->
     <div class="main-food">
       <img id="food-img" src="" alt="Food Image" />
-      <h1 id="food-title"></h1>
+      <h1 id="food-title">Loading...</h1>
       <p class="desc" id="food-desc"></p>
       <p class="price" id="food-price"></p>
       <div class="buttons">
@@ -199,7 +235,7 @@
       list.innerHTML = "";
 
       querySnapshot.forEach(docSnap => {
-        if (docSnap.id === foodId) return; // skip current food
+        if (docSnap.id === foodId) return;
 
         const food = docSnap.data();
         const card = document.createElement("div");
