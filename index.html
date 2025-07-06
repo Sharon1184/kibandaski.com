@@ -22,10 +22,7 @@
       <a href="#"><ion-icon name="notifications-outline"></ion-icon>Notifications</a>
       <a href="#"><ion-icon name="chatbubbles-outline"></ion-icon>Contact Us</a>
       <a href="add-food.html"><ion-icon name="shield-checkmark-outline"></ion-icon>admin</a>
-       <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
-    </div>
-    <div class="sidebarlogout">
-
+      <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
     </div>
   </div>
 
@@ -42,7 +39,25 @@
       </div>
     </div>
 
-    <!-- ✅ CLEANED UP RECOMMENDATIONS SECTION INSERTED HERE -->
+    <!-- ✅ HERO SLIDER -->
+    <div class="hero-slider">
+      <div class="slider-container" id="heroSlider">
+        <div class="slide active">
+          <img src="promo1.jpg" alt="Promo 1" />
+          <div class="slide-caption">🔥 50% Off Burgers Today Only!</div>
+        </div>
+        <div class="slide">
+          <img src="promo2.jpg" alt="Promo 2" />
+          <div class="slide-caption">🍕 Free Delivery for Pizza Orders Above KSh 500</div>
+        </div>
+        <div class="slide">
+          <img src="promo3.jpg" alt="Promo 3" />
+          <div class="slide-caption">💥 Flash Sale: Buy 1 Get 1 Free - Mandazi</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ RECOMMENDATIONS SECTION -->
     <div class="main-highlight">
       <div class="main-header">
         <h2 class="main-title">Recommendations</h2>
@@ -58,6 +73,40 @@
       </div>
     </div>
 
+    <!-- ✅ SPECIAL OFFERS -->
+    <div class="special-offers">
+      <h2 class="main-title">Special Offers</h2>
+      <div class="offers-wrapper">
+        <div class="offer-card">
+          <h3>🔥 30% Off</h3>
+          <p>All Chicken Meals - Today Only</p>
+        </div>
+        <div class="offer-card">
+          <h3>🚚 Free Delivery</h3>
+          <p>For Orders Over KSh 1,000</p>
+        </div>
+        <div class="offer-card">
+          <h3>🎁 Combo Deal</h3>
+          <p>Burger + Soda @ KSh 250</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ✅ FLASH SALE -->
+    <div class="flash-sale">
+      <h2 class="main-title">⏰ Flash Sale Ends In: <span id="flashCountdown">00:00:00</span></h2>
+      <div class="flash-items">
+        <div class="flash-card">
+          <p>Mandazi x3</p>
+          <p><del>KSh 100</del> <strong>KSh 60</strong></p>
+        </div>
+        <div class="flash-card">
+          <p>Fries + Sausage</p>
+          <p><del>KSh 200</del> <strong>KSh 120</strong></p>
+        </div>
+      </div>
+    </div>
+
     <!-- ✅ MENU SECTION -->
     <div class="main-menus">
       <div class="main-filter">
@@ -67,54 +116,14 @@
           <ion-icon class="next-menus" name="chevron-forward-circle-outline"></ion-icon>
         </div>
         <div class="filter-wrapper">
-          <div class="filter-card">
-            <div class="filter-icon">
-              <ion-icon name="restaurant-outline"></ion-icon>
-            </div>
-            <p>All Menus</p>
-          </div>
-          <div class="filter-card">
-            <div class="filter-icon">
-              <ion-icon name="fast-food-outline"></ion-icon>
-            </div>
-            <p>Burger</p>
-          </div>
-          <div class="filter-card">
-            <div class="filter-icon">
-              <ion-icon name="pizza-outline"></ion-icon>
-            </div>
-            <p>Pizza</p>
-          </div>
-          <div class="filter-card">
-            <div class="filter-icon">
-              <ion-icon name="wine-outline"></ion-icon>
-            </div>
-            <p>Wine</p>
-          </div>
-          <div class="filter-card">
-            <div class="filter-icon">
-              <ion-icon name="ice-cream-outline"></ion-icon>
-            </div>
-            <p>Ice Cream</p>
-          </div>
-          <div class="filter-card">
-            <div class="filter-icon">
-              <ion-icon name="cafe-outline"></ion-icon>
-            </div>
-            <p>Kahawa</p>
-          </div>
-          <div class="filter-card">
-            <div class="filter-icon">
-              <ion-icon name="fish-outline"></ion-icon>
-            </div>
-            <p>Seafood</p>
-          </div>
-          <div class="filter-card">
-            <div class="filter-icon">
-              <ion-icon name="nutrition-outline"></ion-icon>
-            </div>
-            <p>Healthy</p>
-          </div>
+          <div class="filter-card"><div class="filter-icon"><ion-icon name="restaurant-outline"></ion-icon></div><p>All Menus</p></div>
+          <div class="filter-card"><div class="filter-icon"><ion-icon name="fast-food-outline"></ion-icon></div><p>Burger</p></div>
+          <div class="filter-card"><div class="filter-icon"><ion-icon name="pizza-outline"></ion-icon></div><p>Pizza</p></div>
+          <div class="filter-card"><div class="filter-icon"><ion-icon name="wine-outline"></ion-icon></div><p>Wine</p></div>
+          <div class="filter-card"><div class="filter-icon"><ion-icon name="ice-cream-outline"></ion-icon></div><p>Ice Cream</p></div>
+          <div class="filter-card"><div class="filter-icon"><ion-icon name="cafe-outline"></ion-icon></div><p>Kahawa</p></div>
+          <div class="filter-card"><div class="filter-icon"><ion-icon name="fish-outline"></ion-icon></div><p>Seafood</p></div>
+          <div class="filter-card"><div class="filter-icon"><ion-icon name="nutrition-outline"></ion-icon></div><p>Healthy</p></div>
         </div>
       </div>
       <hr class="divider" />
@@ -136,5 +145,30 @@
 
   <!-- Custom JS -->
   <script type="module" src="app.js"></script>
+
+  <!-- Extra Script for Flash Countdown and Slider -->
+  <script>
+    // Flash Countdown
+    const countdownEl = document.getElementById('flashCountdown');
+    let time = 60 * 60;
+    setInterval(() => {
+      const hrs = String(Math.floor(time / 3600)).padStart(2, '0');
+      const mins = String(Math.floor((time % 3600) / 60)).padStart(2, '0');
+      const secs = String(time % 60).padStart(2, '0');
+      countdownEl.textContent = `${hrs}:${mins}:${secs}`;
+      time--;
+    }, 1000);
+
+    // Hero Slider Auto-Rotate
+    const slides = document.querySelectorAll('.slide');
+    let slideIndex = 0;
+    function showSlide(index) {
+      slides.forEach((s, i) => s.classList.toggle('active', i === index));
+    }
+    setInterval(() => {
+      slideIndex = (slideIndex + 1) % slides.length;
+      showSlide(slideIndex);
+    }, 4000);
+  </script>
 </body>
-    </html>
+          </html>
