@@ -45,7 +45,7 @@ function displayGroupedFoods(foods) {
     group[Math.floor(Math.random() * group.length)]
   );
 
-  // Shuffle foods (Fisher-Yates)
+  // Shuffle
   for (let i = uniqueFoods.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [uniqueFoods[i], uniqueFoods[j]] = [uniqueFoods[j], uniqueFoods[i]];
@@ -62,9 +62,17 @@ function displayGroupedFoods(foods) {
         <div class="detail-name">
           <h4>${food.name}</h4>
           <p class="detail-sub">${food.description}</p>
-          <p class="price">Ksh. ${food.price}</p>
-          <p class="sold-by">Sold by <a href="restaurant.html?name=${encodeURIComponent(restaurant)}">${restaurant}</a></p>
         </div>
+        <p class="price">Ksh. ${food.price}</p>
+        <div class="rating">
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star"></i>
+          <i class="fas fa-star-half-alt"></i>
+          <i class="far fa-star"></i>
+          <span>4.5</span>
+        </div>
+        <div class="sold-by">Sold by <a href="restaurant.html?name=${encodeURIComponent(restaurant)}">${restaurant}</a></div>
         <ion-icon class="detail-favourite" name="bookmark-outline"></ion-icon>
       </div>
     `;
@@ -74,7 +82,7 @@ function displayGroupedFoods(foods) {
     });
     menuWrapper.appendChild(card);
   });
-}
+        }
 
 // Display Recommendations section
 function displayRecommendations(foods) {
