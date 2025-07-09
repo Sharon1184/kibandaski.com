@@ -1,78 +1,101 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kibandaski Deliveries</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" />
-  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
 <body>
-  <div class="sidebar">
-    <h1 class="logo">Kibandaski</h1>
-    <div class="sidebar-menus">
-      <a href="index.html"><ion-icon name="storefront-outline"></ion-icon>Home</a>
-      <a href="add-food.html"><ion-icon name="add-circle-outline"></ion-icon>Add Food</a>
-      <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
-    </div>
-  </div>  <div class="main">
+
+  <!-- MAIN SECTION -->
+  <div class="main">
+
+    <!-- Navbar with only Account at top -->
     <div class="main-navbar">
-      <ion-icon class="menu-toggle" name="menu-outline"></ion-icon>
       <div class="search">
         <input id="searchInput" type="text" placeholder="Unataka kukula nini?" />
         <button class="search-btn">Search</button>
       </div>
       <div class="profile">
-        <a class="cart" href="cart.html"><ion-icon name="cart-outline"></ion-icon></a>
-        <a class="user" href="auth.html"><ion-icon name="person-outline"></ion-icon></a>
+        <a class="user" href="auth.html">
+          <ion-icon name="person-outline"></ion-icon>
+        </a>
       </div>
-    </div><div class="main-highlight">
-  <div class="main-header">
-    <h2 class="main-title">Recommendations</h2>
-    <div class="main-arrow">
-      <ion-icon class="back" name="chevron-back-circle-outline"></ion-icon>
-      <ion-icon class="next" name="chevron-forward-circle-outline"></ion-icon>
     </div>
-  </div>
-  <div class="highlight-container">
-    <div class="highlight-wrapper" id="highlightSlider">
-      <!-- Dynamic recommended foods go here -->
-    </div>
-  </div>
-</div>
 
-<div class="main-menus">
-  <div class="main-filter">
-    <h2 class="main-title">Menu Category</h2>
-    <div class="main-arrow">
-      <ion-icon class="back-menus" name="chevron-back-circle-outline"></ion-icon>
-      <ion-icon class="next-menus" name="chevron-forward-circle-outline"></ion-icon>
+    <!-- HERO SLIDER -->
+    <div class="hero-slider">
+      <div class="slider-container" id="heroSlider">
+        <div class="slide active">
+          <img src="promo1.jpg" alt="Promo 1" />
+          <div class="slide-caption">🔥 50% Off Burgers Today Only!</div>
+        </div>
+        <div class="slide">
+          <img src="promo2.jpg" alt="Promo 2" />
+          <div class="slide-caption">🍕 Free Delivery for Pizza Orders Above KSh 500</div>
+        </div>
+        <div class="slide">
+          <img src="promo3.jpg" alt="Promo 3" />
+          <div class="slide-caption">💥 Flash Sale: Buy 1 Get 1 Free - Mandazi</div>
+        </div>
+      </div>
     </div>
-    <div class="filter-wrapper">
-      <div class="filter-card"><ion-icon name="restaurant-outline"></ion-icon><p>All</p></div>
-      <div class="filter-card"><ion-icon name="fast-food-outline"></ion-icon><p>Burger</p></div>
-      <div class="filter-card"><ion-icon name="pizza-outline"></ion-icon><p>Pizza</p></div>
-      <div class="filter-card"><ion-icon name="cafe-outline"></ion-icon><p>Kahawa</p></div>
+
+    <!-- RECOMMENDATIONS -->
+    <div class="main-highlight">
+      <div class="main-header">
+        <h2 class="main-title">Recommendations</h2>
+      </div>
+      <div class="highlight-container">
+        <div class="highlight-wrapper" id="highlightSlider">
+          <!-- Random recommended foods will load here -->
+        </div>
+      </div>
     </div>
+
+    <!-- MENU CATEGORY & ITEMS -->
+    <div class="main-menus">
+      <div class="main-filter">
+        <h2 class="main-title">Menu Category</h2>
+        <div class="filter-wrapper">
+          <div class="filter-card"><ion-icon name="restaurant-outline"></ion-icon><p>All</p></div>
+          <div class="filter-card"><ion-icon name="pizza-outline"></ion-icon><p>Pizza</p></div>
+          <div class="filter-card"><ion-icon name="fast-food-outline"></ion-icon><p>Burger</p></div>
+          <div class="filter-card"><ion-icon name="cafe-outline"></ion-icon><p>Kahawa</p></div>
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="main-detail">
+        <h2 class="main-title">Choose Order</h2>
+        <div class="detail-wrapper" id="menu-wrapper">
+          <!-- Food items dynamically load here -->
+        </div>
+      </div>
+    </div>
+
   </div>
 
-  <hr class="divider" />
+  <!-- BOTTOM NAV LOADER -->
+  <div id="bottom-nav-container"></div>
 
-  <div class="main-detail">
-    <h2 class="main-title">Choose Order</h2>
-    <div class="detail-wrapper" id="menu-wrapper">
-      <!-- Dynamic food items go here -->
-    </div>
-  </div>
-</div>
+  <!-- Ionicons -->
+  <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+  <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
-  </div>  <!-- Placeholder for Bottom Navbar -->  <div id="bottom-nav-placeholder"></div>
+  <!-- Load Bottom Nav -->
   <script>
     fetch('bottom-nav.html')
       .then(res => res.text())
-      .then(data => {
-        document.getElementById('bottom-nav-placeholder').innerHTML = data;
+      .then(html => {
+        document.getElementById('bottom-nav-container').innerHTML = html;
       });
-  </script>  <script type="module" src="app.js"></script></body>
-                                          </html>
+  </script>
+
+  <!-- Load Firebase / App Script -->
+  <script type="module" src="app.js"></script>
+
+</body>
+      </html>
