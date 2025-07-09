@@ -4,171 +4,83 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kibandaski Deliveries</title>
+  <link rel="stylesheet" href="style.css" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap"
-    rel="stylesheet"
-  />
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-  <div class="sidebar">
-    <h1 class="logo">DineDash</h1>
-    <div class="sidebar-menus">
-      <a href="index.html"><ion-icon name="storefront-outline"></ion-icon>Home</a>
-      <a href="admin-orders.html"><ion-icon name="receipt-outline"></ion-icon>Bills</a>
-      <a href="#"><ion-icon name="wallet-outline"></ion-icon>Wallet</a>
-      <a href="#"><ion-icon name="notifications-outline"></ion-icon>Notifications</a>
-      <a href="#"><ion-icon name="chatbubbles-outline"></ion-icon>Contact Us</a>
-      <a href="add-food.html"><ion-icon name="shield-checkmark-outline"></ion-icon>admin</a>
-      <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
-    </div>
-  </div>
-
-  <div class="main">
-    <div class="main-navbar">
-      <ion-icon class="menu-toggle" name="menu-outline"></ion-icon>
-      <div class="search">
-        <input id="searchInput" type="text" placeholder="Unataka kukula nini?" />
-        <button class="search-btn">Search</button>
-      </div>
-      <div class="profile">
-        <a class="cart" href="cart.html"><ion-icon name="cart-outline"></ion-icon></a>
-        <a class="user" href="auth.html"><ion-icon name="person-outline"></ion-icon></a>
-      </div>
-    </div>
-
-    <!-- ✅ HERO SLIDER -->
-    <div class="hero-slider">
-      <div class="slider-container" id="heroSlider">
-        <div class="slide active">
-          <img src="data:image/webp;base64,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" alt="Promo 1" />
-          <div class="slide-caption">🔥 50% Off Burgers Today Only!</div>
-        </div>
-        <div class="slide">
-          <img src="promo2.jpg" alt="Promo 2" />
-          <div class="slide-caption">🍕 Free Delivery for Pizza Orders Above KSh 500</div>
-        </div>
-        <div class="slide">
-          <img src="promo3.jpg" alt="Promo 3" />
-          <div class="slide-caption">💥 Flash Sale: Buy 1 Get 1 Free - Mandazi</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ✅ RECOMMENDATIONS SECTION -->
-    <div class="main-highlight">
-      <div class="main-header">
-        <h2 class="main-title">Recommendations</h2>
-        <div class="main-arrow">
-          <ion-icon class="back" name="chevron-back-circle-outline"></ion-icon>
-          <ion-icon class="next" name="chevron-forward-circle-outline"></ion-icon>
-        </div>
-      </div>
-      <div class="highlight-container">
-        <div class="highlight-wrapper" id="highlightSlider">
-          <!-- Random recommended foods will be added here -->
-        </div>
-      </div>
-    </div>
-
-    <!-- ✅ SPECIAL OFFERS -->
-    <div class="special-offers">
-      <h2 class="main-title">Special Offers</h2>
-      <div class="offers-wrapper">
-        <div class="offer-card">
-          <h3>🔥 30% Off</h3>
-          <p>All Chicken Meals - Today Only</p>
-        </div>
-        <div class="offer-card">
-          <h3>🚚 Free Delivery</h3>
-          <p>For Orders Over KSh 1,000</p>
-        </div>
-        <div class="offer-card">
-          <h3>🎁 Combo Deal</h3>
-          <p>Burger + Soda @ KSh 250</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ✅ FLASH SALE -->
-    <div class="flash-sale">
-      <h2 class="main-title">⏰ Flash Sale Ends In: <span id="flashCountdown">00:00:00</span></h2>
-      <div class="flash-items">
-        <div class="flash-card">
-          <p>Mandazi x3</p>
-          <p><del>KSh 100</del> <strong>KSh 60</strong></p>
-        </div>
-        <div class="flash-card">
-          <p>Fries + Sausage</p>
-          <p><del>KSh 200</del> <strong>KSh 120</strong></p>
-        </div>
-      </div>
-    </div>
-
-    <!-- ✅ MENU SECTION -->
-    <div class="main-menus">
-      <div class="main-filter">
-        <h2 class="main-title">Menu Category</h2>
-        <div class="main-arrow">
-          <ion-icon class="back-menus" name="chevron-back-circle-outline"></ion-icon>
-          <ion-icon class="next-menus" name="chevron-forward-circle-outline"></ion-icon>
-        </div>
-        <div class="filter-wrapper">
-          <div class="filter-card"><div class="filter-icon"><ion-icon name="restaurant-outline"></ion-icon></div><p>All Menus</p></div>
-          <div class="filter-card"><div class="filter-icon"><ion-icon name="fast-food-outline"></ion-icon></div><p>Burger</p></div>
-          <div class="filter-card"><div class="filter-icon"><ion-icon name="pizza-outline"></ion-icon></div><p>Pizza</p></div>
-          <div class="filter-card"><div class="filter-icon"><ion-icon name="wine-outline"></ion-icon></div><p>Wine</p></div>
-          <div class="filter-card"><div class="filter-icon"><ion-icon name="ice-cream-outline"></ion-icon></div><p>Ice Cream</p></div>
-          <div class="filter-card"><div class="filter-icon"><ion-icon name="cafe-outline"></ion-icon></div><p>Kahawa</p></div>
-          <div class="filter-card"><div class="filter-icon"><ion-icon name="fish-outline"></ion-icon></div><p>Seafood</p></div>
-          <div class="filter-card"><div class="filter-icon"><ion-icon name="nutrition-outline"></ion-icon></div><p>Healthy</p></div>
-        </div>
-      </div>
-      <hr class="divider" />
-      <div class="main-detail">
-        <h2 class="main-title">Choose Order</h2>
-        <div class="detail-wrapper" id="menu-wrapper">
-          <!-- Food items will be dynamically inserted here -->
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Ionicons -->
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet" />
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+</head>
+<body>
+  <!-- Header / Top Bar -->
+  <header class="jumia-header">
+    <div class="logo">Kibandaski</div>
+    <input type="text" class="jumia-search" placeholder="Search for food, drinks, snacks..." />
+    <div class="header-icons">
+      <a href="#"><ion-icon name="person-outline"></ion-icon> Account</a>
+      <a href="cart.html"><ion-icon name="cart-outline"></ion-icon> Cart</a>
+    </div>
+  </header>
 
-  <!-- jQuery -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <!-- Main Content Layout -->
+  <div class="container">
+    <!-- Sidebar: Categories -->
+    <aside class="category-sidebar">
+      <h3>Categories</h3>
+      <ul id="categoryList">
+        <!-- Categories will be added dynamically -->
+      </ul>
+    </aside>
 
-  <!-- Custom JS -->
-  <script type="module" src="app.js"></script>
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Hero Slider (Dynamic) -->
+      <section class="hero-slider" id="heroSlider">
+        <!-- Promo slides will be inserted dynamically -->
+      </section>
 
-  <!-- Extra Script for Flash Countdown and Slider -->
+      <!-- Info Banner -->
+      <section class="info-banner">
+        <div><ion-icon name="bicycle-outline"></ion-icon> Fast Delivery</div>
+        <div><ion-icon name="cash-outline"></ion-icon> Mpesa Payment</div>
+        <div><ion-icon name="shield-checkmark-outline"></ion-icon> Safe Checkout</div>
+      </section>
+
+      <!-- Flash Sale -->
+      <section class="flash-sale" id="flashSaleSection">
+        <h2>⏰ Flash Sale Ends In: <span id="flashCountdown">--:--:--</span></h2>
+        <div class="flash-grid" id="flashSaleItems">
+          <!-- Flash sale items will be loaded here -->
+        </div>
+      </section>
+
+      <!-- Menu Section -->
+      <section class="menu-section">
+        <h2>🍽 Recommended For You</h2>
+        <div class="menu-grid" id="menu-wrapper">
+          <!-- Menu items will be dynamically inserted here -->
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2025 Kibandaski Deliveries. All rights reserved.</p>
+    <p><a href="#">Terms</a> | <a href="#">Privacy</a></p>
+  </footer>
+
+  <!-- Countdown Script -->
   <script>
-    // Flash Countdown
-    const countdownEl = document.getElementById('flashCountdown');
-    let time = 60 * 60;
+    const countdown = document.getElementById("flashCountdown");
+    let totalSeconds = 3600; // Placeholder
     setInterval(() => {
-      const hrs = String(Math.floor(time / 3600)).padStart(2, '0');
-      const mins = String(Math.floor((time % 3600) / 60)).padStart(2, '0');
-      const secs = String(time % 60).padStart(2, '0');
-      countdownEl.textContent = `${hrs}:${mins}:${secs}`;
-      time--;
+      const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
+      const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
+      const secs = String(totalSeconds % 60).padStart(2, "0");
+      countdown.textContent = `${hrs}:${mins}:${secs}`;
+      totalSeconds--;
     }, 1000);
-
-    // Hero Slider Auto-Rotate
-    const slides = document.querySelectorAll('.slide');
-    let slideIndex = 0;
-    function showSlide(index) {
-      slides.forEach((s, i) => s.classList.toggle('active', i === index));
-    }
-    setInterval(() => {
-      slideIndex = (slideIndex + 1) % slides.length;
-      showSlide(slideIndex);
-    }, 4000);
   </script>
 </body>
-          </html>
+  </html>
