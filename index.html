@@ -1,86 +1,78 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Kibandaski Deliveries</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans&display=swap" />
   <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
   <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 </head>
 <body>
-  <!-- Header / Top Bar -->
-  <header class="jumia-header">
-    <div class="logo">Kibandaski</div>
-    <input type="text" class="jumia-search" placeholder="Search for food, drinks, snacks..." />
-    <div class="header-icons">
-      <a href="#"><ion-icon name="person-outline"></ion-icon> Account</a>
-      <a href="cart.html"><ion-icon name="cart-outline"></ion-icon> Cart</a>
+  <div class="sidebar">
+    <h1 class="logo">Kibandaski</h1>
+    <div class="sidebar-menus">
+      <a href="index.html"><ion-icon name="storefront-outline"></ion-icon>Home</a>
+      <a href="add-food.html"><ion-icon name="add-circle-outline"></ion-icon>Add Food</a>
+      <a href="#"><ion-icon name="log-out-outline"></ion-icon>Logout</a>
     </div>
-  </header>
+  </div>  <div class="main">
+    <div class="main-navbar">
+      <ion-icon class="menu-toggle" name="menu-outline"></ion-icon>
+      <div class="search">
+        <input id="searchInput" type="text" placeholder="Unataka kukula nini?" />
+        <button class="search-btn">Search</button>
+      </div>
+      <div class="profile">
+        <a class="cart" href="cart.html"><ion-icon name="cart-outline"></ion-icon></a>
+        <a class="user" href="auth.html"><ion-icon name="person-outline"></ion-icon></a>
+      </div>
+    </div><div class="main-highlight">
+  <div class="main-header">
+    <h2 class="main-title">Recommendations</h2>
+    <div class="main-arrow">
+      <ion-icon class="back" name="chevron-back-circle-outline"></ion-icon>
+      <ion-icon class="next" name="chevron-forward-circle-outline"></ion-icon>
+    </div>
+  </div>
+  <div class="highlight-container">
+    <div class="highlight-wrapper" id="highlightSlider">
+      <!-- Dynamic recommended foods go here -->
+    </div>
+  </div>
+</div>
 
-  <!-- Main Content Layout -->
-  <div class="container">
-    <!-- Sidebar: Categories -->
-    <aside class="category-sidebar">
-      <h3>Categories</h3>
-      <ul id="categoryList">
-        <!-- Categories will be added dynamically -->
-      </ul>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="main-content">
-      <!-- Hero Slider (Dynamic) -->
-      <section class="hero-slider" id="heroSlider">
-        <!-- Promo slides will be inserted dynamically -->
-      </section>
-
-      <!-- Info Banner -->
-      <section class="info-banner">
-        <div><ion-icon name="bicycle-outline"></ion-icon> Fast Delivery</div>
-        <div><ion-icon name="cash-outline"></ion-icon> Mpesa Payment</div>
-        <div><ion-icon name="shield-checkmark-outline"></ion-icon> Safe Checkout</div>
-      </section>
-
-      <!-- Flash Sale -->
-      <section class="flash-sale" id="flashSaleSection">
-        <h2>⏰ Flash Sale Ends In: <span id="flashCountdown">--:--:--</span></h2>
-        <div class="flash-grid" id="flashSaleItems">
-          <!-- Flash sale items will be loaded here -->
-        </div>
-      </section>
-
-      <!-- Menu Section -->
-      <section class="menu-section">
-        <h2>🍽 Recommended For You</h2>
-        <div class="menu-grid" id="menu-wrapper">
-          <!-- Menu items will be dynamically inserted here -->
-        </div>
-      </section>
-    </main>
+<div class="main-menus">
+  <div class="main-filter">
+    <h2 class="main-title">Menu Category</h2>
+    <div class="main-arrow">
+      <ion-icon class="back-menus" name="chevron-back-circle-outline"></ion-icon>
+      <ion-icon class="next-menus" name="chevron-forward-circle-outline"></ion-icon>
+    </div>
+    <div class="filter-wrapper">
+      <div class="filter-card"><ion-icon name="restaurant-outline"></ion-icon><p>All</p></div>
+      <div class="filter-card"><ion-icon name="fast-food-outline"></ion-icon><p>Burger</p></div>
+      <div class="filter-card"><ion-icon name="pizza-outline"></ion-icon><p>Pizza</p></div>
+      <div class="filter-card"><ion-icon name="cafe-outline"></ion-icon><p>Kahawa</p></div>
+    </div>
   </div>
 
-  <!-- Footer -->
-  <footer class="footer">
-    <p>© 2025 Kibandaski Deliveries. All rights reserved.</p>
-    <p><a href="#">Terms</a> | <a href="#">Privacy</a></p>
-  </footer>
+  <hr class="divider" />
 
-  <!-- Countdown Script -->
+  <div class="main-detail">
+    <h2 class="main-title">Choose Order</h2>
+    <div class="detail-wrapper" id="menu-wrapper">
+      <!-- Dynamic food items go here -->
+    </div>
+  </div>
+</div>
+
+  </div>  <!-- Placeholder for Bottom Navbar -->  <div id="bottom-nav-placeholder"></div>
   <script>
-    const countdown = document.getElementById("flashCountdown");
-    let totalSeconds = 3600; // Placeholder
-    setInterval(() => {
-      const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, "0");
-      const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, "0");
-      const secs = String(totalSeconds % 60).padStart(2, "0");
-      countdown.textContent = `${hrs}:${mins}:${secs}`;
-      totalSeconds--;
-    }, 1000);
-  </script>
-</body>
-  </html>
+    fetch('bottom-nav.html')
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById('bottom-nav-placeholder').innerHTML = data;
+      });
+  </script>  <script type="module" src="app.js"></script></body>
+                                          </html>
