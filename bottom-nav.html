@@ -1,0 +1,70 @@
+<!-- bottom-nav.html -->
+<style>
+  .bottom-navbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: #ffffff;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 1000;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.08);
+  }
+
+  .bottom-navbar .nav-item {
+    text-align: center;
+    font-size: 12px;
+    color: #555;
+    text-decoration: none;
+    flex: 1;
+    padding: 6px 0;
+    transition: color 0.3s ease;
+  }
+
+  .bottom-navbar .nav-item:hover {
+    color: #ff6600;
+  }
+
+  .bottom-navbar .nav-item.active {
+    color: #ff5e00;
+  }
+
+  .bottom-navbar .nav-item ion-icon {
+    display: block;
+    font-size: 22px;
+    margin-bottom: 2px;
+  }
+
+  @media (min-width: 768px) {
+    .bottom-navbar {
+      display: none;
+    }
+  }
+</style>
+
+<div class="bottom-navbar">
+  <a href="index.html" class="nav-item active">
+    <ion-icon name="home-outline"></ion-icon>
+    <span>Home</span>
+  </a>
+  <a href="cart.html" class="nav-item">
+    <ion-icon name="cart-outline"></ion-icon>
+    <span>Cart</span>
+  </a>
+  <a href="auth.html" class="nav-item">
+    <ion-icon name="person-outline"></ion-icon>
+    <span>Account</span>
+  </a>
+  <a href="#" class="nav-item">
+    <ion-icon name="call-outline"></ion-icon>
+    <span>Support</span>
+  </a>
+</div>
+
+<!-- Ionicons CDN (only include once if already loaded in your page) -->
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
