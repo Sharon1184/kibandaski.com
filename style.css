@@ -21,73 +21,8 @@ body {
   background: var(--softgreencolor);
 }
 
-.logo {
-  margin-top: 80px;
-}
-
-.sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 250px;
-  height: 100vh;
-  background-color: var(--primarycolor);
-  color: var(--whitecolor);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  padding: 2%;
-  z-index: 200;
-  transition: transform 0.3s ease-in-out;
-}
-
-.sidebar-menus,
-.sidebarlogout {
-  display: flex;
-  flex-direction: column;
-}
-
-.sidebar-menus a,
-.sidebarlogout a {
-  padding: 5% 8%;
-  margin: 0.5rem 0;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  text-decoration: none;
-  color: var(--whitecolor);
-  transition: 0.3s;
-}
-
-.sidebar-menus ion-icon,
-.sidebarlogout ion-icon {
-  font-size: 20px;
-}
-
-.sidebar-menus a:hover,
-.sidebarlogout a:hover {
-  background-color: var(--secondarycolor);
-  border-radius: 50px;
-}
-
-.menu-toggle {
-  display: none;
-  position: fixed;
-  top: 15px;
-  left: 15px;
-  z-index: 999;
-  font-size: 24px;
-  padding: 8px;
-  background-color: var(--whitecolor);
-  color: var(--primarycolor);
-  border-radius: 50%;
-  cursor: pointer;
-}
-
 .main {
-  margin-left: 250px;
   padding: 2%;
-  transition: margin-left 0.3s ease-in-out;
 }
 
 .main-navbar {
@@ -147,7 +82,6 @@ body {
   gap: 0.5rem;
 }
 
-.cart,
 .user {
   display: flex;
   justify-content: center;
@@ -162,11 +96,46 @@ body {
   transition: 0.3s;
 }
 
-.cart:hover,
 .user:hover {
   box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
 }
 
+/* ===== HERO SLIDER ===== */
+.hero-slider {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  margin-top: 10px;
+}
+
+.slider-container {
+  display: flex;
+  animation: slide 15s infinite ease-in-out;
+}
+
+.slide {
+  min-width: 100%;
+  position: relative;
+}
+
+.slide img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.slide-caption {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  color: #fff;
+  background: rgba(0,0,0,0.6);
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+}
+
+/* ===== RECOMMENDATIONS ===== */
 .main-highlight {
   margin: 1% 0;
   padding: 2%;
@@ -183,23 +152,6 @@ body {
 
 .main-title {
   font-size: 20px;
-}
-
-.main-arrow {
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1rem;
-}
-
-.main-arrow ion-icon {
-  font-size: 24px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.main-arrow ion-icon:hover {
-  color: var(--primarycolor);
 }
 
 .highlight-wrapper {
@@ -243,6 +195,7 @@ body {
   box-shadow: rgba(176, 176, 176, 0.2) 0px 2px 8px;
 }
 
+/* ===== MENU CATEGORY & MENU ITEMS ===== */
 .main-menus {
   min-height: 100%;
   background-color: var(--greycolor);
@@ -294,34 +247,12 @@ body {
   transition: 0.3s;
 }
 
-.filter-icon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 60%;
-  width: 80%;
-  font-size: 30px;
-  background-color: var(--softgreencolor);
-  color: var(--primarycolor);
-  border-radius: 8px;
-}
-
 .filter-card:hover {
   background-color: var(--primarycolor);
   color: var(--whitecolor);
 }
 
-.filter-card:hover .filter-icon {
-  background-color: var(--whitecolor);
-}
-
-.divider {
-  margin: 1rem 0;
-  height: 1px;
-  width: 100%;
-  background-color: var(--primarycolor);
-  border: none;
-}
+/* Menu Items Grid */
 .detail-wrapper {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -389,10 +320,6 @@ body {
   transition: 0.3s;
 }
 
-.price:hover {
-  letter-spacing: 1.5px;
-}
-
 .rating {
   margin-top: 0.5rem;
   color: gold;
@@ -424,38 +351,8 @@ body {
 
 /* Mobile Responsive */
 @media screen and (max-width: 768px) {
-  .sidebar {
-    display: none;
-  }
-
-  .sidebar.active {
-    display: flex;
-    position: fixed;
-    left: 0;
-    top: 0;
-    background-color: var(--primarycolor);
-    z-index: 100;
-  }
-
   .main {
     margin-left: 0;
-  }
-
-  .menu-toggle {
-    display: flex;
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    font-size: 24px;
-    background-color: var(--whitecolor);
-    color: var(--primarycolor);
-    justify-content: center;
-    align-items: center;
-    padding: 8px;
-    height: 40px;
-    border-radius: 50%;
-    z-index: 1000;
-    cursor: pointer;
   }
 
   .main-navbar {
@@ -485,244 +382,4 @@ body {
   .main-highlight {
     margin-top: 1.5rem;
   }
-    }
-.hero-slider {
-  width: 100%;
-  overflow: hidden;
-  position: relative;
-  margin-top: 10px;
-}
-
-.slider-container {
-  display: flex;
-  animation: slide 15s infinite ease-in-out;
-}
-
-.slide {
-  min-width: 100%;
-  position: relative;
-}
-
-.slide img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
-.slide-caption {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  color: #fff;
-  background: rgba(0,0,0,0.6);
-  padding: 10px 20px;
-  border-radius: 10px;
-  font-weight: bold;
-}
-
-.special-offers, .flash-sale {
-  padding: 1rem;
-  background: #fff8e1;
-  margin-top: 1rem;
-  border-radius: 10px;
-}
-
-.offers-wrapper, .flash-items {
-  display: flex;
-  gap: 1rem;
-  overflow-x: auto;
-}
-
-.offer-card, .flash-card {
-  min-width: 200px;
-  background: #fff;
-  padding: 1rem;
-  border: 1px dashed #ff9800;
-  border-radius: 10px;
-  flex-shrink: 0;
-}
-/* ===== JUMIA-LIKE HEADER ===== */
-.jumia-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: var(--primarycolor);
-  padding: 10px 20px;
-  color: var(--whitecolor);
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
-
-.jumia-header .logo {
-  font-size: 22px;
-  font-weight: bold;
-  color: var(--whitecolor);
-}
-
-.jumia-search {
-  flex: 1;
-  max-width: 500px;
-  margin: 0 20px;
-  padding: 8px 15px;
-  border-radius: 20px;
-  border: none;
-  outline: none;
-  font-size: 14px;
-}
-
-.header-icons a {
-  color: var(--whitecolor);
-  text-decoration: none;
-  margin-left: 20px;
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 14px;
-}
-
-.header-icons a ion-icon {
-  font-size: 18px;
-}
-
-/* ===== SIDEBAR CATEGORY ===== */
-.container {
-  display: flex;
-  padding-top: 70px;
-  gap: 1rem;
-}
-
-.category-sidebar {
-  width: 200px;
-  background-color: var(--whitecolor);
-  padding: 1rem;
-  border-right: 1px solid #ccc;
-  border-radius: 0 0 10px 0;
-}
-
-.category-sidebar h3 {
-  margin-bottom: 1rem;
-  color: var(--primarycolor);
-  font-size: 16px;
-}
-
-.category-sidebar ul {
-  list-style: none;
-  padding-left: 0;
-}
-
-.category-sidebar ul li {
-  margin: 10px 0;
-  cursor: pointer;
-  font-size: 14px;
-  color: var(--blackcolor);
-  transition: 0.3s;
-}
-
-.category-sidebar ul li:hover {
-  color: var(--primarycolor);
-}
-
-/* ===== MAIN CONTENT AREA ===== */
-.main-content {
-  flex: 1;
-  padding: 1rem;
-}
-
-/* ===== HERO SLIDER PLACEHOLDER ===== */
-.hero-slider {
-  height: 200px;
-  border-radius: 10px;
-  background-color: #ddd;
-  margin-bottom: 1rem;
-}
-
-/* ===== INFO BANNER ===== */
-.info-banner {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  background: var(--whitecolor);
-  padding: 15px;
-  margin: 1rem 0;
-  border-radius: 10px;
-  font-size: 14px;
-  color: var(--primarycolor);
-  box-shadow: 0 0 5px rgba(0,0,0,0.05);
-}
-
-.info-banner div {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-}
-
-/* ===== FLASH SALE SECTION ===== */
-.flash-sale {
-  background-color: #fff3e0;
-  padding: 1rem;
-  border-radius: 10px;
-  margin: 1.5rem 0;
-}
-
-.flash-sale h2 {
-  font-size: 18px;
-  color: var(--primarycolor);
-  margin-bottom: 1rem;
-}
-
-.flash-grid {
-  display: flex;
-  gap: 1rem;
-  overflow-x: auto;
-}
-
-.flash-grid::-webkit-scrollbar {
-  display: none;
-}
-
-/* Flash items will be added dynamically */
-.flash-card {
-  background: var(--whitecolor);
-  min-width: 180px;
-  padding: 10px;
-  border-radius: 10px;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.1);
-}
-
-/* ===== MENU SECTION ===== */
-.menu-section {
-  margin-top: 1.5rem;
-}
-
-.menu-section h2 {
-  font-size: 18px;
-  color: var(--primarycolor);
-  margin-bottom: 1rem;
-}
-
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 1rem;
-}
-
-/* ===== FOOTER ===== */
-.footer {
-  background-color: var(--primarycolor);
-  color: var(--whitecolor);
-  text-align: center;
-  padding: 1rem;
-  font-size: 13px;
-  margin-top: 2rem;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-}
-
-.footer a {
-  color: var(--secondarycolor);
-  margin: 0 5px;
-  text-decoration: none;
   }
